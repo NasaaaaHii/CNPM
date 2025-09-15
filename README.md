@@ -1,5 +1,5 @@
-# Công Nghệ Phần Mềm
-## Thông tin thành viên nhóm
+# Công Nghệ Phần Mềm :computer:
+## :point_right: Thông tin thành viên nhóm
 | MSSV | Họ tên |
 | :---: | :---: | 
 | 3123410007 | Nguyễn Hoàng Anh |
