@@ -16,6 +16,7 @@
 
 ## Cấu trúc project
 
+```bash
 CNPM/
 ├── client/ # Frontend (Next.js + Tailwind + TS)
 │ ├── package.json
@@ -29,6 +30,7 @@ CNPM/
 │
 ├── README.md
 └── .gitignore
+```
 
 ## ⚡ Yêu cầu môi trường
 
