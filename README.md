@@ -46,20 +46,23 @@ npm -v
 
 # Cách chạy project
 
+```bash
 git clone <link-project>
 cd CNPM
+```
 
 ## Backend
-
+```bash
 cd server
 npm install # cài dependencies
 npm run dev # chạy server ở chế độ dev (nodemon)
 ---Build ra file .js
 npm run build
 npm start # -> http://localhost:5000
-
+```
 ## Frontend
-
+```bash
 cd client
 npm install # cài dependencies
 npm run dev # chạy frontend (nextjs) -> http://localhost:3000
+```
