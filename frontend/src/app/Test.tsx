@@ -7,7 +7,7 @@ import { BellRing } from "lucide-react";
 export const Test = () => {
   return (
     <>  
-        <Toaster position="center" richColors/>
+        <Toaster position="top-right" richColors/>
         <Button variant="secondary" size="icon" className="size-8" onClick={() => toast.success('Event has been created')}>
           <BellRing />
         </Button>
