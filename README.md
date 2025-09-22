@@ -18,12 +18,12 @@
 
 ```bash
 CNPM/
-├── client/ # Frontend (Next.js + Tailwind + TS)
+├── frontend/ # Frontend (Next.js + Tailwind + TS)
 │ ├── package.json
 │ ├── package-lock.json
 │ └── src/...
 │
-├── server/ # Backend (Express + TS)
+├── backend/ # Backend (Express + TS)
 │ ├── package.json
 │ ├── package-lock.json
 │ └── src/...
@@ -52,6 +52,7 @@ cd CNPM
 ```
 
 ## Backend
+
 ```bash
 cd server
 npm install # cài dependencies
@@ -60,7 +61,9 @@ npm run dev # chạy server ở chế độ dev (nodemon)
 npm run build
 npm start # -> http://localhost:5000
 ```
+
 ## Frontend
+
 ```bash
 cd client
 npm install # cài dependencies
