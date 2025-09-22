@@ -14,6 +14,9 @@
 
 ---
 
+## Metting
+[Meeting_nhom2](https://docs.google.com/document/d/1lQykKHJ-ZNztgOThJkBnfzYeF6E_ISaT/edit)
+
 ## Cấu trúc project
 
 ```bash
@@ -69,3 +72,9 @@ cd client
 npm install # cài dependencies
 npm run dev # chạy frontend (nextjs) -> http://localhost:3000
 ```
+
+
+### Note
+- selenium,vercel,ci/cd
+- mô hình aida,scrum cycle,agile scrum
+- plantUML,latex
