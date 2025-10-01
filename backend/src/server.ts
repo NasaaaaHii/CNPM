@@ -1,6 +1,6 @@
 import {app} from "./app.js"
 
-const PORT = 5000
+const PORT: number = 5000
 
 app.get("./")
 
