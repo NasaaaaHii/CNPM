@@ -1,6 +1,6 @@
 import "../styles/globals.css";
-
 import { Toaster } from 'sonner';
+import { Navbar } from ".././components/layout/Navbar";
  
 export default function RootLayout({
   children,
@@ -11,7 +11,8 @@ export default function RootLayout({
     <html lang="en" className="mdl-js">
 
       <body>
-        {children}
+       <Navbar />
+        <main>{children}</main>
         <Toaster />
       </body>
     </html>
