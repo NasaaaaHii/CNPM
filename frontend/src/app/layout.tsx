@@ -1,7 +1,8 @@
 import "../styles/globals.css";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 import { Navbar } from ".././components/layout/Navbar";
- 
+import { AuthProvider } from "@/contexts/AuthContext";
+
 export default function RootLayout({
   children,
 }: {
@@ -9,11 +10,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="mdl-js">
-
       <body>
-       <Navbar />
-        <main>{children}</main>
-        <Toaster />
+        <AuthProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
