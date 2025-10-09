@@ -1,15 +1,19 @@
 import { About } from "@/components/layout/About";
 import { Contact } from "@/components/layout/Contact";
 import { HomeSlider } from "@/components/layout/HomeSlider";
-import Link from "next/link";
+import { Navbar } from "@/components/layout/Navbar";
 export default function HomePage() {
   return (
     <main>
+      <Navbar />
       <section id="home" className="relative h-[700px] w-full">
         <HomeSlider />
       </section>
 
-      <section id="about" className="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
+      <section
+        id="about"
+        className="py-20 bg-gradient-to-r from-gray-50 to-blue-50"
+      >
         <About />
       </section>
 
@@ -19,3 +23,4 @@ export default function HomePage() {
     </main>
   );
 }
+
