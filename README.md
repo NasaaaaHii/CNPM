@@ -60,7 +60,7 @@ cd CNPM
 ```bash
 cd backend
 npm install # cài dependencies
-npm run dev # chạy server ở chế độ dev (nodemon)
+npm run dev # chạy server ở chế độ dev (nodemon) -> run backend
 ---Build ra file .js
 npm run build
 npm start # -> http://localhost:5000

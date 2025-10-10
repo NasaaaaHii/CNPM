@@ -1,9 +1,9 @@
 import {app} from "./app.js"
 
-const PORT: number = 5000
+const port: (number | string) = process.env.PORT || 3000
 
 app.get("./")
 
-app.listen(PORT, () => {
-  console.log(`server running at http://locahost:${PORT}`)
+app.listen(port, () => {
+  console.log(`server running at http://locahost:${port}`)
 })

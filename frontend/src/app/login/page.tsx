@@ -1,6 +1,6 @@
 "use client";
 
-import RoleSelection from "@/components/auth/RoleSelection";
+import RoleSelection from "./RoleSelection";
 
 export default function LoginPage() {
   return <RoleSelection />;
