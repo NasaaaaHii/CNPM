@@ -1,6 +1,6 @@
 services:
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: backend_dev
@@ -12,9 +12,9 @@ services:
     env_file:
       - ./backend/.env
     command: npm run dev
-  
+
   frontend:
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: frontend_dev

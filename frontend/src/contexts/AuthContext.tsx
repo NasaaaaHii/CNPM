@@ -1,26 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import type {User, UserRole, AuthContextType} from "@/types/auth";
 
-export type UserRole = "parent" | "driver" | "admin";
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-  avatar?: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  login: (email: string, password: string, role: UserRole) => Promise<boolean>;
-  logout: () => void;
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -36,6 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         localStorage.removeItem("user");
         localStorage.removeItem("authToken");
+        console.log("Errors: ", error)
       }
     }
     setLoading(false);
@@ -71,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = (): void => {
     localStorage.removeItem("user");
     localStorage.removeItem("authToken");
     setUser(null);
@@ -88,10 +72,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}

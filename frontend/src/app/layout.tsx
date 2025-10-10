@@ -12,7 +12,6 @@ export default function RootLayout({
     <html lang="en" className="mdl-js">
       <body>
         <AuthProvider>
-          <Navbar />
           <main>{children}</main>
           <Toaster />
         </AuthProvider>
