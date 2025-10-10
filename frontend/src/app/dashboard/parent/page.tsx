@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const ParentPage = () => {
+export default function ParentPage() {
   return (
     <div>Parent page</div>
   )

@@ -1,7 +1,8 @@
 import { About } from "@/components/layout/About";
 import { Contact } from "@/components/layout/Contact";
 import { HomeSlider } from "@/components/layout/HomeSlider";
-import { Navbar } from "@/components/layout/Navbar";
+import { Navbar } from ".././components/layout/Navbar";
+import Link from "next/link";
 export default function HomePage() {
   return (
     <main>

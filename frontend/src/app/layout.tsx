@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import { Toaster } from "sonner";
-import { Navbar } from ".././components/layout/Navbar";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 export default function RootLayout({
