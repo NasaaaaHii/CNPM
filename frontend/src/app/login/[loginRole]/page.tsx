@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
 import UnifiedLogin from "@/components/auth/UnifiedLogin";
 import React from "react";
 import { UserRole } from "@/types/auth";
-interface LoginRolePage {
-  params: Promise<{loginRole: string}>;
+interface LoginRolePageProps {
+  params: Promise<{ loginRole: string }>;
 }
 
-export default async function LoginRolePage({ params }: LoginRolePage) {
-  const {loginRole} = await params
+export default async function LoginRolePage({ params }: LoginRolePageProps) {
+  const { loginRole } = await params;
   return <UnifiedLogin role={loginRole as UserRole} />;
 }
