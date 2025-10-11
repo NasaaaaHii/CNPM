@@ -1,10 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Bus, User, Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { LoginProps } from "@/types/loginAuth";
@@ -61,20 +57,7 @@ export default function UnifiedLogin({ role }: LoginProps) {
       const success = await login(formData.email, formData.password, role);
 
       if (success) {
-        // Redirect based on role
-        switch (role) {
-          case "admin":
-            router.push("/admin/dashboard");
-            break;
-          case "driver":
-            router.push("/driver/dashboard");
-            break;
-          case "parent":
-            router.push("/parent/dashboard");
-            break;
-          default:
-            router.push("/dashboard");
-        }
+        router.push(`/dashboard/${role}`)
       } else {
         setErrors({
           email: "",

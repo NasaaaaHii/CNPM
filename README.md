@@ -34,6 +34,9 @@ CNPM/
 │
 ├── README.md
 └── .gitignore
+├── docker-compose.dev.yml
+└── .gitignore
+
 ```
 
 ## ⚡ Yêu cầu môi trường
@@ -73,6 +76,11 @@ cd frontend
 npm install # cài dependencies
 npm run dev # chạy frontend (nextjs) -> http://localhost:3000
 ```
+
+# RUN DOCKER
+<!-- ở thư mục CNPM -->
+docker compose -f docker-compose.dev.yml up --build # chạy cả fe + be
+<!-- nếu muốn chạy riêng đổi up thành frontend or backend -->
 
 ### Note
 
