@@ -51,6 +51,7 @@ export default function RoleSelection() {
           <Link
             href="/"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-colors"
+            prefetch={true}
           >
             <svg
               className="w-4 h-4"
@@ -86,7 +87,7 @@ export default function RoleSelection() {
             </h2>
 
             {roles.map((role) => (
-              <Link key={role.id} href={role.href}>
+              <Link key={role.id} href={role.href} prefetch={true}>
                 <Card className="cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-white/40 bg-white/60 backdrop-blur-sm hover:bg-white/80">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
