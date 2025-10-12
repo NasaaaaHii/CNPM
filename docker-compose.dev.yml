@@ -12,6 +12,9 @@ services:
     env_file:
       - ./backend/.env
     command: npm run dev
+    user: node
+    environment:
+      - NODE_ENV=development
 
   frontend:
     build:
@@ -23,9 +26,11 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-      - /app/.next
     env_file:
       - ./frontend/.env
     depends_on:
       - backend
     command: npm run dev
+    user: node
+    environment:
+      - NODE_ENV=development

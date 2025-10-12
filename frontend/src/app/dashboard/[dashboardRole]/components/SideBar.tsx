@@ -1,4 +1,3 @@
-"use client";
 import React, { ReactNode } from "react";
 import {
   Bus,
@@ -75,7 +74,7 @@ export const SideBar = ({ role }: { role: string }) => {
       },
       {
         name: "Tuyến đường hôm nay",
-        path: `/dashboard/${role}/droutes`,
+        path: `/dashboard/${role}/dayroutes`,
         icon: <Route />,
       },
       { name: "Báo cáo", path: `/dashboard/${role}/reports`, icon: <Send /> },

@@ -18,7 +18,7 @@ export default function DashboardLayout({
   const pathRoleName = usePathname();
   const role = pathRoleName.split("/")[2] as UserRole;
   return (
-    <div className="grid grid-rows-3 grid-flow-col min-h-screen">
+    <div className="grid grid-rows-3 grid-flow-col max-h-screen">
       <ResizablePanelGroup direction="horizontal" className="min-h-screen">
         <ResizablePanel defaultSize={15}>
           <SideBar role={role} />
@@ -31,7 +31,7 @@ export default function DashboardLayout({
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={92}>
-              <main className="p-4">{children}</main>
+              <main>{children}</main>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

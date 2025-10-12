@@ -1,9 +1,10 @@
 "use client"
-export default function DashboardPage({
-    params
-}: {params: {dasboardRole: string}}){
-    const {dasboardRole} = params
+import { usePathname } from "next/navigation"
+
+export default function DashboardPage(){
+    const path = usePathname()
+    const role = path.split("/")[2]
     return (
-        <h1>Hello {dasboardRole}</h1>
+        <h1>Hello {role}</h1>
     )
 }

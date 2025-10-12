@@ -1,5 +1,3 @@
-"use client";
-
 import RoleSelection from "./RoleSelection";
 
 export default function LoginPage() {
