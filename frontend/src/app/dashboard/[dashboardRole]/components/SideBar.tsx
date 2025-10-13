@@ -103,11 +103,11 @@ export const SideBar = ({ role }: { role: string }) => {
                 asChild
                 variant={active ? "secondary" : "ghost"}
                 className={`flex justify-start gap-4 w-full${
-                  active ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100"
+                  active ? "bg-blue-100 text-blue-700 hover:bg-blue-200" : "hover:bg-gray-100 text-gray-800"
                 }`}
               >
                 <Link href={item.path}>
-                  <i>{item.icon}</i>
+                  <i>{item.icon}</i >
                   {item.name}
                 </Link>
               </Button>

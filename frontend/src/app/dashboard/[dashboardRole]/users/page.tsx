@@ -50,7 +50,7 @@ export default function ManagerUsers() {
     },
   ];
   return (
-    <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
+    <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">
         <Card>
           <CardHeader>
