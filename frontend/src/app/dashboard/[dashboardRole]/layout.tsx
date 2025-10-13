@@ -31,7 +31,7 @@ export default function DashboardLayout({
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={92}>
-              <main>{children}</main>
+              <main className="h-[100%] overflow-x-hidden">{children}</main>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
