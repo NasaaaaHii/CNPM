@@ -11,10 +11,13 @@ import {
   Baby,
   MessageCircle,
   Send,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 export const SideBar = ({ role }: { role: string }) => {
   const menu: Record<
@@ -83,7 +86,7 @@ export const SideBar = ({ role }: { role: string }) => {
   const rolenInPath = usePathname();
   const items = menu[role] ?? [];
   return (
-    <aside className="container mx-auto h-full grid grid-rows-10 grid-cols-1">
+    <aside className="container mx-auto max-h-full min-h-full grid grid-rows-10 grid-cols-1">
       <div className="row-span-1 flex justify-center items-center gap-5 border border-b-gray-300">
         <div className="w-12 h-12 bg-blue-700 flex items-center justify-center rounded-xl">
           <UserCheck size={36} color="#f1f2f3" strokeWidth={1.75} />
@@ -103,11 +106,13 @@ export const SideBar = ({ role }: { role: string }) => {
                 asChild
                 variant={active ? "secondary" : "ghost"}
                 className={`flex justify-start gap-4 w-full${
-                  active ? "bg-blue-100 text-blue-700 hover:bg-blue-200" : "hover:bg-gray-100 text-gray-800"
+                  active
+                    ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    : "hover:bg-gray-100 text-gray-800"
                 }`}
               >
                 <Link href={item.path}>
-                  <i>{item.icon}</i >
+                  <i>{item.icon}</i>
                   {item.name}
                 </Link>
               </Button>
@@ -115,7 +120,31 @@ export const SideBar = ({ role }: { role: string }) => {
           })}
         </div>
       </div>
-      <div className="row-span-1 bg-gray-600"></div>
+      <div className="row-span-1 bg-gray-100">
+        <div className="container flex p-3 justify-center items-start flex-wrap gap-3">
+          <div className="flex w-full gap-2">
+            <Avatar>
+              <AvatarImage src={"/avt/admin.png"}></AvatarImage>
+              <AvatarFallback>Admin</AvatarFallback>
+            </Avatar>
+            <div>
+              <p>{role.toLocaleUpperCase()} USER</p>
+              <p className="text-muted-foreground text-[12px]">
+                {role === "admin" ? "Administrator" : "User"}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant={"default"}
+            className="w-full items-center bg-blue-600 text-white hover:bg-blue-800 h-8"
+          >
+            <Link href={"/login"} className="w-full flex justify-start">
+              <LogOut className="w-4 h-4 mr-2" />
+              <span>Logout</span>
+            </Link>
+          </Button>
+        </div>
+      </div>
     </aside>
   );
 };

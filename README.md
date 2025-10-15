@@ -87,3 +87,5 @@ docker compose -f docker-compose.dev.yml up --build # chạy cả fe + be
 - selenium,vercel,ci/cd
 - mô hình aida,scrum cycle,agile scrum
 - plantUML,latex
+- tích hợp Zod để validation
+- tối ưu performance: thư viện lodash, (useTransition), Suspense, API cache, Lazy loading, 

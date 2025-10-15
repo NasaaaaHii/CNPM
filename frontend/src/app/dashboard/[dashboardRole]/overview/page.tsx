@@ -37,7 +37,7 @@ export default function Overview() {
     },
   ];
   return (
-    <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
+    <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">
         <div className="grid grid-cols-4 lg:grid-cols-4 gap-6 md:grid-cols-2">
           {cardItem.map((item) => {
