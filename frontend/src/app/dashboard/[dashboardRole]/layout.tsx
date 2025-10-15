@@ -20,11 +20,11 @@
     return (
       <div className="max-h-screen">
         <ResizablePanelGroup direction="horizontal" className="min-h-screen">
-          <ResizablePanel defaultSize={15} maxSize={20} minSize={15}>
+          <ResizablePanel defaultSize={13} maxSize={15} minSize={13}>
             <SideBar role={role} />
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={85}>
+          <ResizablePanel defaultSize={88}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={8} maxSize={10} minSize={8}>
                 <TopBar role={role} />
