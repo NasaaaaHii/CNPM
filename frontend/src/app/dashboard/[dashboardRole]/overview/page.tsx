@@ -2,10 +2,10 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Baby, Bus, Route, User } from "lucide-react";
-import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import MapBoxComponent from "@/components/MapBox/MapBoxComponent";
 
 export default function Overview() {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
+
 
   const cardItem = [
     {
@@ -74,18 +74,7 @@ export default function Overview() {
             </CardHeader>
             <CardContent className="p-2">
               <div className="w-full h-full rounded-sm">
-                <APIProvider apiKey={apiKey}>
-                  <Map
-                    center={center}
-                    zoom={15}
-                    style={{ width: "100%", height: "800px", borderRadius: "8px" }}
-                    mapTypeId="roadmap"
-                    disableDefaultUI={false}
-                    gestureHandling="greedy"
-                  >
-                    <Marker position={center} />
-                  </Map>
-                </APIProvider>
+                <MapBoxComponent />
               </div>
             </CardContent>
           </Card>
