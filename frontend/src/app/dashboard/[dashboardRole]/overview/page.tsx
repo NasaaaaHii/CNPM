@@ -2,10 +2,11 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Baby, Bus, Route, User } from "lucide-react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import  Loading  from "@/components/layout/Loading";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 
 export default function Overview() {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
+
   const cardItem = [
     {
       title: "Total Buses",
@@ -41,61 +42,31 @@ export default function Overview() {
     },
   ];
 
-  const center = {
-    lat: 10.76018,
-    lng: 106.68225,
-  };
+  const center = { lat: 10.76018, lng: 106.68225 };
 
-  const darkMapStyle = [
-    { elementType: "geometry", stylers: [{ color: "#212121" }] },
-    { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-    { elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-    { elementType: "labels.text.stroke", stylers: [{ color: "#212121" }] },
-    {
-      featureType: "administrative",
-      elementType: "geometry",
-      stylers: [{ color: "#757575" }],
-    },
-    {
-      featureType: "poi",
-      elementType: "geometry",
-      stylers: [{ color: "#282828" }],
-    },
-    {
-      featureType: "road",
-      elementType: "geometry.fill",
-      stylers: [{ color: "#2c2c2c" }],
-    },
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [{ color: "#000000" }],
-    },
-  ];
   return (
     <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">
         <div className="grid grid-cols-4 lg:grid-cols-4 gap-6 md:grid-cols-2">
-          {cardItem.map((item) => {
-            return (
-              <Card
+          {cardItem.map((item) => (
+            <Card
               key={item.title}
               className="hover:shadow-md transition-shadow"
-              >
-                <CardHeader className="flex flex-row justify-between items-center">
-                  <CardTitle className="text-[15px]">{item.title}</CardTitle>
-                  <div className={`${item.bg} ${item.color} p-2 rounded-lg`}>
-                    {item.icon}
-                  </div>
-                </CardHeader>
-                <CardContent className="flex flex-col">
-                  <div className="text-2xl">{item.value}</div>
-                  <p className="text-muted-foreground">{item.change}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
+            >
+              <CardHeader className="flex flex-row justify-between items-center">
+                <CardTitle className="text-[15px]">{item.title}</CardTitle>
+                <div className={`${item.bg} ${item.color} p-2 rounded-lg`}>
+                  {item.icon}
+                </div>
+              </CardHeader>
+              <CardContent className="flex flex-col">
+                <div className="text-2xl">{item.value}</div>
+                <p className="text-muted-foreground">{item.change}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
+
         <div>
           <Card>
             <CardHeader>
@@ -103,23 +74,18 @@ export default function Overview() {
             </CardHeader>
             <CardContent className="p-2">
               <div className="w-full h-full rounded-sm">
-                <LoadScript
-                  googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY_SSB ?? ""}
-                  loadingElement={<Loading />}
-                >
-                  <GoogleMap
-                    mapContainerClassName="w-full h-[800px]"
+                <APIProvider apiKey={apiKey}>
+                  <Map
                     center={center}
-                    zoom={10}
-                    options={{
-                      styles: darkMapStyle,
-                      disableDefaultUI: false,
-                      zoomControl:true
-                    }}
+                    zoom={15}
+                    style={{ width: "100%", height: "800px", borderRadius: "8px" }}
+                    mapTypeId="roadmap"
+                    disableDefaultUI={false}
+                    gestureHandling="greedy"
                   >
                     <Marker position={center} />
-                  </GoogleMap>
-                </LoadScript>
+                  </Map>
+                </APIProvider>
               </div>
             </CardContent>
           </Card>
