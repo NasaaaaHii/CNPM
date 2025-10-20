@@ -86,43 +86,44 @@ export const SideBar = ({ role }: { role: string }) => {
   const rolenInPath = usePathname();
   const items = menu[role] ?? [];
   return (
-    <aside className="container mx-auto max-h-full min-h-full grid grid-rows-10 grid-cols-1">
-      <div className="row-span-1 flex justify-center items-center gap-5 border border-b-gray-300">
+    <aside className="h-full flex flex-col">
+      <div className="h-fit flex justify-center items-center gap-3 border-b border-b-gray-300 p-3">
         <div className="w-12 h-12 bg-blue-700 flex items-center justify-center rounded-xl">
-          <UserCheck size={36} color="#f1f2f3" strokeWidth={1.75} />
+          <UserCheck size={36} color="#f1f2f3" strokeWidth={2} className="p-1"/>
         </div>
         <div className="flex flex-col flex-start">
-          <h3>Smart Bus System SGU</h3>
-          <p className="text-muted-foreground">{role.toLocaleUpperCase()}</p>
+          <h3 className="text-gray-900 text-sm font-medium">Smart Bus System SGU</h3>
+          <p className="text-xs text-gray-500">{role.toLocaleUpperCase()}</p>
         </div>
       </div>
-      <div className="row-span-8">
-        <div className="space-y-1 mx-2 my-2 flex flex-col">
-          {items.map((item) => {
-            const active = rolenInPath === item.path;
-            return (
-              <Button
-                key={item.path}
-                asChild
-                variant={active ? "secondary" : "ghost"}
-                className={`flex justify-start gap-4 w-full${
-                  active
+
+      <div className="flex flex-col justify-between grow">
+        <div className="w-full shrink">
+          <div className="space-y-1 mx-2 my-2 flex flex-col">
+            {items.map((item) => {
+              const active = rolenInPath === item.path;
+              return (
+                <Button
+                  key={item.path}
+                  asChild
+                  variant={active ? "secondary" : "ghost"}
+                  className={`flex justify-start gap-4 w-full${active
                     ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
                     : "hover:bg-gray-100 text-gray-800"
-                }`}
-              >
-                <Link href={item.path}>
-                  <i>{item.icon}</i>
-                  {item.name}
-                </Link>
-              </Button>
-            );
-          })}
+                    }`}
+                >
+                  <Link href={item.path}>
+                    <i>{item.icon}</i>
+                    {item.name}
+                  </Link>
+                </Button>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <div className="row-span-1 bg-gray-100">
-        <div className="container flex p-3 justify-center items-start flex-wrap gap-3">
-          <div className="flex w-full gap-2">
+
+        <div className="flex w-full h-fit flex-wrap gap-2 bg-gray-100 p-3">
+          <div className="flex w-full items-center gap-2">
             <Avatar>
               <AvatarImage src={"/avt/admin.png"}></AvatarImage>
               <AvatarFallback>Admin</AvatarFallback>
@@ -136,7 +137,7 @@ export const SideBar = ({ role }: { role: string }) => {
           </div>
           <Button
             variant={"default"}
-            className="w-full items-center bg-blue-600 text-white hover:bg-blue-800 h-8"
+            className="w-full m-1 items-center bg-blue-600 text-white hover:bg-blue-800 h-8"
           >
             <Link href={"/login"} className="w-full flex justify-start">
               <LogOut className="w-4 h-4 mr-2" />
