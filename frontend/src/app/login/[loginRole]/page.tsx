@@ -6,7 +6,7 @@ interface LoginRolePageProps {
   params: { loginRole: string }; 
 }
 
-export default function LoginRolePage({ params }: LoginRolePageProps) {
-  const { loginRole } = params;
+export default async function LoginRolePage({ params }: LoginRolePageProps) {
+  const { loginRole } = await params;
   return <UnifiedLogin role={loginRole as UserRole} />;
 }

@@ -20,8 +20,8 @@ export default function MapBoxComponent() {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [106.660172, 10.762622],
-      zoom: 15,
+      center: [106.68217, 10.76010],
+      zoom: 17,
     });
 
     new mapboxgl.Marker({ color: "red" })
