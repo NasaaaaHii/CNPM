@@ -1,10 +1,22 @@
-import {app} from "./app.js"
-const port: (number | string) = process.env.PORT || 3000
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { connectDB } from "./config/db.js";
+import { router } from "./routes/UserRouteDemo.js"; 
+dotenv.config();
 
-app.get("./",(req,res) => {
-  res.send("Backend running")
-})
+const server = express();
+const port: number | string = process.env.PORT || 5000;
 
-app.listen(port, () => {
-  console.log(`server running at http://locahost:${port}`)
-})
+//middlewares
+server.use(cors());
+server.use(express.json());
+
+server.use('/api',router)
+
+
+connectDB().then(() => {
+  server.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+});
