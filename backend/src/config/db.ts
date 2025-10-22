@@ -1,16 +1,25 @@
-import mongoose from "mongoose";
+import { Sequelize } from "sequelize";
+import  dotenv from "dotenv";
 
-export const connectDB = async (): Promise<void> => {
-    try {
-        const uri = process.env.MONGO_URI as string;
-        if(!uri) {
-            throw new Error("MONGO_URI not found in .env")
-        }
+dotenv.config()
 
-        await mongoose.connect(uri)
-        console.log("Connect mongodb successfully")
-    } catch(err) {
-        console.log("connect mongodb failed", err)
-        process.exit(1)
+const sequelize = new Sequelize(
+    process.env.DB_NAME as string,
+    process.env.DB_USER as string,
+    process.env.DB_PASSWORD as string,
+    {
+        host:process.env.DB_HOST as string,
+        dialect:process.env.DB_DIALECT as any,
+        logging: false,
     }
+)
+
+try {
+    await sequelize.authenticate();
+    console.log("kết nối mysql bằng sequelize thành công")
+} catch(err) {
+    console.error("Lỗi kết nối", err)
+    process.exit(1)
 }
+
+export default sequelize;
