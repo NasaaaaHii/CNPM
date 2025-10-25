@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Baby, Bus, Route, User } from "lucide-react";
-import MapBoxComponent from "@/components/MapBox/MapBoxComponent";
+import MapClient from "@/components/map/MapClient";
 
 export default function Overview() {
 
@@ -70,11 +70,12 @@ export default function Overview() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Google Map SSB</CardTitle>
+              <CardTitle>Map SSB</CardTitle>
             </CardHeader>
             <CardContent className="p-2">
               <div className="w-full h-full rounded-sm">
-                <MapBoxComponent />
+                {/* Map */}
+                <MapClient />
               </div>
             </CardContent>
           </Card>
