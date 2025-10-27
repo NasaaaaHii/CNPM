@@ -22,25 +22,27 @@ export default function Reports() {
   return (
     <div className="bg-gray-50">
       <div className="container mx-auto px-4 md:px-6 py-6 space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Notifications</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 border border-gray-200 rounded-xl p-4">
+          <div className="ml-5 pb-2">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">
+              Notifications
+            </h2>
+          </div>
+          <div className="flex flex-col gap-4">
             {reportsData.map((report, index) => (
-              <Card
-                className={`rounded-2xl ${
+              <div
+                className={`rounded-2xl border border-gray-200 ${
                   report.level === "info" ? "bg-blue-500" : "bg-yellow-500"
                 }`}
                 key={index}
               >
-                <Card
+                <div
                   className={`ml-1 rounded-xl ${
                     report.level === "info" ? "bg-blue-50" : "bg-yellow-50"
                   } p-4`}
                 >
                   <div className="flex flex-col gap-2">
-                    <div className="flex flex-row justify-between ">
+                    <div className="flex flex-row justify-between">
                       <h2 className="text-[19px] font-medium">
                         {report.message}
                       </h2>
@@ -48,11 +50,11 @@ export default function Reports() {
                     </div>
                     <p className="">{report.time}</p>
                   </div>
-                </Card>
-              </Card>
+                </div>
+              </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
