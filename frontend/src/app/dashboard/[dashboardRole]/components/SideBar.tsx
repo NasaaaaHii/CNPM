@@ -86,7 +86,7 @@ export const SideBar = ({ role }: { role: string }) => {
   const rolenInPath = usePathname();
   const items = menu[role] ?? [];
   return (
-    <aside className="h-full flex flex-col">
+    <aside className="h-full flex flex-col border-r border-r-gray-300">
       <div className="h-fit flex justify-center items-center gap-3 border-b border-b-gray-300 p-3">
         <div className="w-12 h-12 bg-blue-700 flex items-center justify-center rounded-xl">
           <UserCheck size={36} color="#f1f2f3" strokeWidth={2} className="p-1"/>
@@ -107,7 +107,7 @@ export const SideBar = ({ role }: { role: string }) => {
                   key={item.path}
                   asChild
                   variant={active ? "secondary" : "ghost"}
-                  className={`flex justify-start gap-4 w-full${active
+                  className={`flex justify-start gap-4 w-full ${active
                     ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
                     : "hover:bg-gray-100 text-gray-800"
                     }`}

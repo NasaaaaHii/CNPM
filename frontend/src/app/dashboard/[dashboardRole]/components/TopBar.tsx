@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const TopBar = ({role}: {role: string}) => {
   return (
-    <div className=" h-full flex items-center bg-white p-8 shadow">
+    <div className=" h-full flex items-center bg-white p-8 shadow border-b border-b-gray-300">
       <div className="w-full flex justify-between">
           <div>
             <p>{role.toUpperCase()} DASHBOARD</p>
