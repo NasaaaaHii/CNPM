@@ -32,13 +32,18 @@ export default function ManagerDayRoutes() {
   return (
     <div className="bg-gray-50">
       <div className="container mx-auto px-4 md:px-6 py-6 space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Today's Schedule</CardTitle>
-          </CardHeader>
+        <div className="flex flex-col gap-2 px-4 border border-gray-200 rounded-xl">
+          <div className="py-4 ml-5">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">
+              Today's Schedule
+            </h2>
+          </div>
           <CardContent className="flex flex-col space-y-4">
             {dataRouter.map((item, index) => (
-              <div className="flex flex-col bg-white p-4 rounded-lg shadow">
+              <div
+                className="flex flex-col bg-white p-4 rounded-lg shadow"
+                key={index}
+              >
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex flex-row gap-4">
                     <div className="shadow-md text-blue-600 bg-blue-50 rounded-lg p-4">
@@ -63,7 +68,7 @@ export default function ManagerDayRoutes() {
               </div>
             ))}
           </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   );

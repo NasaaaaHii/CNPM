@@ -52,11 +52,14 @@ export default function ManagerBus() {
   return (
     <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
       <div className="space-y-6">
-        <Card>
+        <Card className="rounded-xl border border-gray-200">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>List Bus</CardTitle>
-              <Button variant={"secondary"} className="bg-blue-500 hover:bg-blue-700 hover:text-white">
+              <Button
+                variant={"secondary"}
+                className="bg-blue-500 hover:bg-blue-700 hover:text-white"
+              >
                 <Bus />
                 Add new Bus
               </Button>
@@ -80,12 +83,19 @@ export default function ManagerBus() {
                   <TableRow key={bus.id}>
                     <TableCell>{bus.id}</TableCell>
                     <TableCell>{bus.type}</TableCell>
-                    <TableCell className="text-left">{bus.numberOfSeats}</TableCell>
+                    <TableCell className="text-left">
+                      {bus.numberOfSeats}
+                    </TableCell>
                     <TableCell>{bus.driver}</TableCell>
                     <TableCell>
                       <Badge
                         variant={"secondary"}
-                        className={cn("text-white cursor-pointer",bus.status ? "bg-green-500 hover:bg-green-400" : "bg-gray-500 hover:bg-gray-400")}
+                        className={cn(
+                          "text-white cursor-pointer",
+                          bus.status
+                            ? "bg-green-500 hover:bg-green-400"
+                            : "bg-gray-500 hover:bg-gray-400"
+                        )}
                       >
                         {bus.status ? "Active" : "Inactive"}
                       </Badge>

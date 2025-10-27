@@ -57,12 +57,14 @@ export default function ManagerMySchedule() {
   return (
     <div className="bg-gray-50">
       <div className="container mx-auto px-4 md:px-6 py-6 space-y-6">
-        <Card className="bg-green-600 rounded-2xl ">
-          <Card className="ml-1 rounded-xl">
-            <CardHeader className="pb-8">
-              <CardTitle>Today's Route Assignment</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <div className="bg-green-600 rounded-2xl">
+          <div className="ml-1 rounded-xl bg-gray-50 border border-gray-300">
+            <div className="pb-8 ml-4 mt-4">
+              <h2 className="text-2xl font-semibold leading-none tracking-tight">
+                Today's Route Assignment
+              </h2>
+            </div>
+            <div className="ml-4 pb-4">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <div>
@@ -90,28 +92,32 @@ export default function ManagerMySchedule() {
                     <p className="text-xl">{totalStudents} students</p>
                   </div>
                   <div className="pt-2 flex flex-row justify-center gap-4">
-                    <button className="w-full inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg">
+                    <button className="w-full inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg mr-24">
                       <Navigation size={18} />
                       Start Navigation
                     </button>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </Card>
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle>Router Map</CardTitle>
-          </CardHeader>
-          <CardContent></CardContent>
-        </Card>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="border border-gray-300 rounded-xl p-6 flex flex-col">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">
+              Router Map
+            </h2>
+          </div>
+          <div className=""></div>
+        </div>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle>Student Pickup List</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="border border-gray-200 rounded-xl flex flex-col gap-2 px-4">
+          <div className="pb-3 pt-5">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">
+              Student Pickup List
+            </h2>
+          </div>
+          <div>
             {dataStudents.map((student, index) => (
               <div
                 key={index}
@@ -136,8 +142,8 @@ export default function ManagerMySchedule() {
                 </button>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

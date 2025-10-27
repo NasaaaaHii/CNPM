@@ -52,7 +52,7 @@ export default function ManagerUsers() {
   return (
     <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">
-        <Card>
+        <Card className="border border-gray-200">
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>User</CardTitle>
@@ -82,13 +82,24 @@ export default function ManagerUsers() {
                     <TableCell>{user.role}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                        <Badge variant={"secondary"} className={user.status ? "bg-green-400":"bg-gray-400"}>{user.status ? "Active": "Inactive"}</Badge>
+                      <Badge
+                        variant={"secondary"}
+                        className={user.status ? "bg-green-400" : "bg-gray-400"}
+                      >
+                        {user.status ? "Active" : "Inactive"}
+                      </Badge>
                     </TableCell>
                     <TableCell className="flex gap-2">
-                      <Button variant={"secondary"} className="hover:bg-orange-300">
+                      <Button
+                        variant={"secondary"}
+                        className="hover:bg-orange-300"
+                      >
                         <UserRoundPen />
                       </Button>
-                      <Button variant={"secondary"} className="hover:bg-red-500">
+                      <Button
+                        variant={"secondary"}
+                        className="hover:bg-red-500"
+                      >
                         <Trash />
                       </Button>
                     </TableCell>
