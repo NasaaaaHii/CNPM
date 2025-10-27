@@ -42,8 +42,6 @@ export default function Overview() {
     },
   ];
 
-  const center = { lat: 10.76018, lng: 106.68225 };
-
   return (
     <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">
@@ -76,7 +74,7 @@ export default function Overview() {
               <div className="w-full h-full rounded-sm">
                 {/* Map */}
                 <MapClient />
-              </div>
+              </div>  
             </CardContent>
           </Card>
         </div>

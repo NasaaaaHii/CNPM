@@ -5,8 +5,8 @@ import { Route } from "lucide-react";
 export default function ManagerRoutes() {
   return (
     <div className="flex-1 overflow-y-auto p-8">
-      <div className="space-y-6">
-        <Card>
+      <div className="space-y-6 border-gray-500">
+        <Card className="border-0">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Routes</CardTitle>

@@ -17,14 +17,13 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function MapClient() {
-  const position: [number, number] = [10.762622, 106.660172]; // Tọa độ trung tâm (TPHCM)
+  const position: [number, number] = [10.762622, 106.660172];
 
   return (
-    <div className="w-full h-[500px] rounded-2xl overflow-hidden shadow-md">
+    <div className="w-full h-[800px] rounded-2xl overflow-hidden shadow-md">
       <MapContainer
         center={position}
-        zoom={13}
-        scrollWheelZoom={true}
+        zoom={15}
         className="h-full w-full"
       >
         <TileLayer

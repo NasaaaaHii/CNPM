@@ -112,7 +112,7 @@ export const SideBar = ({ role }: { role: string }) => {
                     : "hover:bg-gray-100 text-gray-800"
                     }`}
                 >
-                  <Link href={item.path}>
+                  <Link href={item.path} prefetch={false}>
                     <i>{item.icon}</i>
                     {item.name}
                   </Link>
