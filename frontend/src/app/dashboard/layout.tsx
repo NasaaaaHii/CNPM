@@ -1,18 +1,20 @@
 "use client";
-import { SideBar } from "@/app/dashboard/[dashboardRole]/components/SideBar";
-import { TopBar } from "@/app/dashboard/[dashboardRole]/components/TopBar";
+import { SideBar } from "@/app/dashboard/components/SideBar";
+import { TopBar } from "@/app/dashboard/components/TopBar";
+import React, { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { UserRole } from "@/types/auth";
-import { useMemo } from "react";
-
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathRoleName = usePathname();
-  const role = pathRoleName.split("/")[2] as UserRole;
-
+  const pathname = usePathname()
+  const role = useMemo(() => {
+    if(pathname.includes("/dashboard/admin")) return "admin";
+    if(pathname.includes("/dashboard/driver")) return "driver";
+    if(pathname.includes("/dashboard/parent")) return "parent";
+    return "admin";
+  },[pathname])
   // Chỉ render lại khi role đổi
   const memoizedSidebar = useMemo(() => <SideBar role={role} />, [role]);
   const memoizedTopbar = useMemo(() => <TopBar role={role} />, [role]);
