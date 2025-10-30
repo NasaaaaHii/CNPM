@@ -57,7 +57,9 @@ export default function UnifiedLogin({ role }: LoginProps) {
       const success = await login(formData.email, formData.password, role);
 
       if (success) {
-        router.push(`/dashboard/${role}`)
+        if(role === "admin") router.push("/dashboard/admin/overview")
+        if(role === "driver") router.push("/dashboard/driver/myschedule")
+        if(role === "parent") router.push("/dashboard/parent/bus-gps")
       } else {
         setErrors({
           email: "",

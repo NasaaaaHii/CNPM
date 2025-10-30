@@ -4,11 +4,11 @@ import Link from "next/link";
 
 export const TopBar = ({role}: {role: string}) => {
   return (
-    <div className=" h-full flex items-center bg-white p-8 shadow border-b border-b-gray-300">
+    <div className=" h-full w-full flex items-center bg-white p-8 shadow">
       <div className="w-full flex justify-between">
           <div>
-            <p>{role.toUpperCase()} DASHBOARD</p>
-            <p className="text-muted-foreground">Wellcome back, {role.toUpperCase()}</p>
+            <p>{role} DASHBOARD</p>
+            <p className="text-muted-foreground">Wellcome back, {role}</p>
           </div>
 
           <div className="flex gap-8 items-center justify-end">
