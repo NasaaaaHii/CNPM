@@ -3,7 +3,7 @@ import { Bus } from 'lucide-react'
 import { Button } from '../ui/button'
 import Link from 'next/link'
 export const Navbar = () => {
-  return (
+    return (
         <div className='bg-white border-b border-gray-200 sticky top-0 z-100 shadow-sm'>
             <div className='container mx-auto px-6 py-4'>
                 <div className='flex items-center justify-between'>
@@ -20,12 +20,14 @@ export const Navbar = () => {
                         <a href="#home" className='text-xm'>Home</a>
                         <a href="#about" className='text-xm'>About</a>
                         <a href="#contact" className='text-xm'>Contact</a>
-                        <Button variant='secondary' className='bg-blue-600 text-xm text-white font-bold hover:bg-blue-400 hover:font-extrabold'>
-                            <Link href={"/login"}>Login</Link>
-                        </Button>
+                        <Link href={"/login"}>
+                            <Button variant='secondary' className='bg-blue-600 text-xm text-white font-bold hover:bg-blue-400 hover:font-extrabold cursor-pointer'>
+                                Login
+                            </Button>
+                        </Link>
                     </nav>
                 </div>
             </div>
         </div>
-  )
+    )
 }
