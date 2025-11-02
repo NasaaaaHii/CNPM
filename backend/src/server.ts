@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import sequelize from "./config/db.js";
-import userRouters from "../src/routes/user.routes.js";
+
+import supabase from "./config/supabaseClient.js";
 dotenv.config();
 
 const server = express();
@@ -11,10 +11,19 @@ const port: number | string = process.env.PORT || 5000;
 //middlewares
 server.use(cors());
 server.use(express.json());
-server.use("/api/users", userRouters);
 
-sequelize.sync().then(() => {
-  server.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-  });
+async function testConnect() {
+    const {data,error} = await supabase.from("type_account").select("*")
+
+    if(error) {
+        console.error("ket noi that bai", error.message)
+    } else {
+      console.log("ket noi thanh cong")
+      console.log("data: ", data)
+    }
+}
+
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+  testConnect()
 });
