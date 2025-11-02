@@ -82,16 +82,6 @@ npm run dev # chạy frontend (nextjs) -> http://localhost:3000
 docker compose -f docker-compose.dev.yml up --build # chạy cả fe + be
 <!-- nếu muốn chạy riêng đổi up thành frontend or backend -->
 
-#CONNECT DB
-để kết nối được database -> ae cần tạo 1 file .env cùng cấp với src nha xong thêm đoạn dưới và thay username + passord của mysql của ae vào
-PORT =5000
-NODE_ENV =development
-DB_NAME = SmartBusSystemDB
-DB_USER = your_username
-DB_PASSWORD = your_password
-DB_HOST = localhost
-DB_DIALECT = mysql
-
 ### Note
 
 - selenium,vercel,ci/cd
