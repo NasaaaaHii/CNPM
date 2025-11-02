@@ -34,42 +34,42 @@ show_menu() {
 
 start_jenkins() {
     print_info "Starting Jenkins..."
-    docker start jenkins
+    sudo docker start jenkins
     print_success "Jenkins started"
 }
 
 stop_jenkins() {
     print_info "Stopping Jenkins..."
-    docker stop jenkins
+    sudo docker stop jenkins
     print_success "Jenkins stopped"
 }
 
 restart_jenkins() {
     print_info "Restarting Jenkins..."
-    docker restart jenkins
+    sudo docker restart jenkins
     print_success "Jenkins restarted"
 }
 
 view_logs() {
     print_info "Viewing Jenkins logs (Ctrl+C to exit)..."
-    docker logs -f jenkins
+    sudo docker logs -f jenkins
 }
 
 check_status() {
     print_info "Checking Jenkins status..."
-    docker ps --filter name=jenkins --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    sudo docker ps --filter name=jenkins --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 }
 
 get_password() {
     print_info "Retrieving admin password..."
-    docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+    sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 }
 
 backup_jenkins() {
     print_info "Creating backup..."
     BACKUP_FILE="jenkins_backup_$(date +%Y%m%d_%H%M%S).tar.gz"
-    docker exec jenkins tar czf /tmp/backup.tar.gz /var/jenkins_home
-    docker cp jenkins:/tmp/backup.tar.gz ./${BACKUP_FILE}
+    sudo docker exec jenkins tar czf /tmp/backup.tar.gz /var/jenkins_home
+    sudo docker cp jenkins:/tmp/backup.tar.gz ./${BACKUP_FILE}
     print_success "Backup created: ${BACKUP_FILE}"
 }
 
@@ -77,9 +77,9 @@ restore_jenkins() {
     read -p "Enter backup file path: " BACKUP_FILE
     if [ -f "$BACKUP_FILE" ]; then
         print_info "Restoring from backup..."
-        docker cp ${BACKUP_FILE} jenkins:/tmp/backup.tar.gz
-        docker exec jenkins tar xzf /tmp/backup.tar.gz -C /
-        docker restart jenkins
+        sudo docker cp ${BACKUP_FILE} jenkins:/tmp/backup.tar.gz
+        sudo docker exec jenkins tar xzf /tmp/backup.tar.gz -C /
+        sudo docker restart jenkins
         print_success "Restore complete"
     else
         echo "Backup file not found"
@@ -88,16 +88,16 @@ restore_jenkins() {
 
 clean_docker() {
     print_info "Cleaning Docker images..."
-    docker system prune -a -f
+    sudo docker system prune -a -f
     print_success "Docker cleanup complete"
 }
 
 update_jenkins() {
     print_info "Updating Jenkins..."
-    docker pull jenkins/jenkins:lts
-    docker stop jenkins
-    docker rm jenkins
-    docker run -d \
+    sudo docker pull jenkins/jenkins:lts
+    sudo docker stop jenkins
+    sudo docker rm jenkins
+    sudo docker run -d \
         --name jenkins \
         --restart=unless-stopped \
         -p 8080:8080 \
