@@ -9,8 +9,9 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Trash, UserRoundPen, User, Bus } from "lucide-react";
+import { Trash, UserRoundPen, Bus } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 export default function ManagerBus() {
   const buses = [
     {

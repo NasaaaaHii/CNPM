@@ -28,8 +28,8 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function MapClient() {
-  const school: [number, number] = [10.76006, 106.68229];
-  const home: [number, number] = [10.76102, 106.63001];
+  const school: [number, number] = useMemo(() => [10.76006, 106.68229], []);
+  const home: [number, number] = useMemo(() => [10.76102, 106.63001], []);
   const routes = useMemo(() => [home, school], [home, school]);
 
   const [busPos, setBusPos] = useState({ lat: home[0], lng: home[1] });
