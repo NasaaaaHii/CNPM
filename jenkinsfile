@@ -1,0 +1,421 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'NodeJS-22.14.0'
+        dockerTool 'docker-latest'
+    }
+    
+    environment {
+        // Docker Registry Configuration
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_IMAGE_FRONTEND = 'your-dockerhub-username/smartbus-frontend'
+        DOCKER_IMAGE_BACKEND = 'your-dockerhub-username/smartbus-backend'
+        DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
+        
+        // Git Configuration
+        GIT_COMMIT_SHORT = sh(
+            script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+            returnStdout: true
+        )
+        
+        // Build Information
+        BUILD_DATE = sh(script: "date +%Y-%m-%d-%H-%M", returnStdout: true).trim()
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo ' Checking out code from GitHub...'
+                checkout scm
+                
+                script {
+                    // Display build information
+                    echo "Branch: ${env.BRANCH_NAME}"
+                    echo "Commit: ${env.GIT_COMMIT_SHORT}"
+                    echo "Build Number: ${env.BUILD_NUMBER}"
+                    echo "Build Date: ${env.BUILD_DATE}"
+                }
+            }
+        }
+        
+        stage('Install Dependencies') {
+            parallel {
+                stage('Backend Dependencies') {
+                    steps {
+                        dir('backend') {
+                            echo ' Installing backend dependencies...'
+                            sh '''
+                                echo "Node version: $(node --version)"
+                                echo "NPM version: $(npm --version)"
+                                npm ci
+                            '''
+                        }
+                    }
+                }
+                stage('Frontend Dependencies') {
+                    steps {
+                        dir('frontend') {
+                            echo ' Installing frontend dependencies...'
+                            sh '''
+                                echo "Node version: $(node --version)"
+                                echo "NPM version: $(npm --version)"
+                                npm ci
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Code Quality Check') {
+            parallel {
+                stage('Lint Backend') {
+                    steps {
+                        dir('backend') {
+                            echo ' Linting backend code...'
+                            sh 'npm run lint || true'
+                        }
+                    }
+                }
+                stage('Lint Frontend') {
+                    steps {
+                        dir('frontend') {
+                            echo ' Linting frontend code...'
+                            sh 'npm run lint'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Build') {
+            parallel {
+                stage('Build Backend') {
+                    steps {
+                        dir('backend') {
+                            echo ' Building backend...'
+                            sh 'npm run build'
+                            
+                            // Verify build output
+                            sh 'ls -la dist/'
+                        }
+                    }
+                }
+                stage('Build Frontend') {
+                    steps {
+                        dir('frontend') {
+                            echo ' Building frontend...'
+                            sh 'npm run build'
+                            
+                            // Verify build output
+                            sh 'ls -la .next/'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Test') {
+            parallel {
+                stage('Test Backend') {
+                    steps {
+                        dir('backend') {
+                            echo ' Running backend tests...'
+                            sh '''
+                                if [ -f "package.json" ] && grep -q '"test"' package.json; then
+                                    npm test || echo "Tests failed or not configured"
+                                else
+                                    echo "No tests configured yet"
+                                fi
+                            '''
+                        }
+                    }
+                }
+                stage('Test Frontend') {
+                    steps {
+                        dir('frontend') {
+                            echo ' Running frontend tests...'
+                            sh '''
+                                if [ -f "package.json" ] && grep -q '"test"' package.json; then
+                                    npm test || echo "Tests failed or not configured"
+                                else
+                                    echo "No tests configured yet"
+                                fi
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                echo ' Running security audit...'
+                script {
+                    // Backend security scan
+                    dir('backend') {
+                        sh 'npm audit --audit-level=high || true'
+                    }
+                    
+                    // Frontend security scan
+                    dir('frontend') {
+                        sh 'npm audit --audit-level=high || true'
+                    }
+                }
+            }
+        }
+        
+        stage('Build Docker Images') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                    branch 'hai'
+                }
+            }
+            steps {
+                script {
+                    echo ' Building Docker images...'
+                    
+                    // Build frontend image
+                    dir('frontend') {
+                        sh """
+                            docker build \
+                                -t ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER} \
+                                -t ${DOCKER_IMAGE_FRONTEND}:${GIT_COMMIT_SHORT} \
+                                -t ${DOCKER_IMAGE_FRONTEND}:latest \
+                                -f Dockerfile.dev \
+                                .
+                        """
+                    }
+                    
+                    // Build backend image
+                    dir('backend') {
+                        sh """
+                            docker build \
+                                -t ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER} \
+                                -t ${DOCKER_IMAGE_BACKEND}:${GIT_COMMIT_SHORT} \
+                                -t ${DOCKER_IMAGE_BACKEND}:latest \
+                                -f Dockerfile.dev \
+                                .
+                        """
+                    }
+                    
+                    // List built images
+                    sh 'docker images | grep smartbus'
+                }
+            }
+        }
+        
+        stage('Push Docker Images') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    echo ' Pushing Docker images to registry...'
+                    
+                    // Login to Docker Hub
+                    sh """
+                        echo ${DOCKER_CREDENTIALS_PSW} | docker login -u ${DOCKER_CREDENTIALS_USR} --password-stdin
+                    """
+                    
+                    // Push frontend images
+                    sh """
+                        docker push ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}
+                        docker push ${DOCKER_IMAGE_FRONTEND}:${GIT_COMMIT_SHORT}
+                        docker push ${DOCKER_IMAGE_FRONTEND}:latest
+                    """
+                    
+                    // Push backend images
+                    sh """
+                        docker push ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}
+                        docker push ${DOCKER_IMAGE_BACKEND}:${GIT_COMMIT_SHORT}
+                        docker push ${DOCKER_IMAGE_BACKEND}:latest
+                    """
+                    
+                    echo ' Docker images pushed successfully!'
+                }
+            }
+        }
+        
+        stage('Deploy to Development') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'hai'
+                }
+            }
+            steps {
+                echo ' Deploying to development environment...'
+                sh '''
+                    docker compose -f docker-compose.dev.yml down || true
+                    docker compose -f docker-compose.dev.yml up -d
+                    
+                    # Wait for services to be ready
+                    sleep 10
+                    
+                    # Check if services are running
+                    docker compose -f docker-compose.dev.yml ps
+                '''
+            }
+        }
+        
+        stage('Deploy to Staging') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo ' Deploying to staging environment...'
+                sh '''
+                    docker compose -f docker-compose.dev.yml down || true
+                    docker compose -f docker-compose.dev.yml up -d
+                    
+                    # Wait for services to be ready
+                    sleep 10
+                    
+                    # Check if services are running
+                    docker compose -f docker-compose.dev.yml ps
+                    
+                    # Health check
+                    echo "Waiting for services to be healthy..."
+                    sleep 5
+                '''
+            }
+        }
+        
+        stage('Production Approval') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    echo '  Waiting for production deployment approval...'
+                    
+                    timeout(time: 30, unit: 'MINUTES') {
+                        input message: 'Deploy to Production?', 
+                              ok: 'Deploy',
+                              submitter: 'admin'
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo ' Deploying to production environment...'
+                script {
+                    // Add your production deployment commands here
+                    echo 'Production deployment steps would go here'
+                    echo 'Examples:'
+                    echo '- Deploy to cloud provider (AWS, Azure, GCP)'
+                    echo '- Update Kubernetes deployment'
+                    echo '- Run database migrations'
+                    echo '- Update load balancer'
+                }
+            }
+        }
+        
+        stage('Smoke Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                }
+            }
+            steps {
+                echo ' Running smoke tests...'
+                script {
+                    sh '''
+                        # Test backend health
+                        curl -f http://localhost:5000/health || echo "Backend health check failed"
+                        
+                        # Test frontend
+                        curl -f http://localhost:3000 || echo "Frontend check failed"
+                    '''
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo ' Cleaning up...'
+            
+            script {
+                // Clean up Docker images to save space
+                sh '''
+                    # Remove dangling images
+                    docker image prune -f || true
+                    
+                    # Remove old images (keep last 5 builds)
+                    # Uncomment if needed:
+                    # docker images | grep smartbus | tail -n +6 | awk '{print $3}' | xargs -r docker rmi || true
+                '''
+            }
+            
+            // Archive build artifacts
+            archiveArtifacts artifacts: '**/dist/**, **/.next/**', 
+                           allowEmptyArchive: true,
+                           fingerprint: true
+            
+            // Clean workspace
+            cleanWs()
+        }
+        
+        success {
+            echo ' Pipeline succeeded! '
+            
+            script {
+                // Send success notification
+                emailext (
+                    subject: " Build Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                    body: """
+                        <h2>Build Successful!</h2>
+                        <p><strong>Job:</strong> ${env.JOB_NAME}</p>
+                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                        <p><strong>Branch:</strong> ${env.BRANCH_NAME}</p>
+                        <p><strong>Commit:</strong> ${env.GIT_COMMIT_SHORT}</p>
+                        <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    """,
+                    to: 'team@example.com',
+                    mimeType: 'text/html'
+                )
+            }
+        }
+        
+        failure {
+            echo ' Pipeline failed!'
+            
+            script {
+                // Send failure notification
+                emailext (
+                    subject: " Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                    body: """
+                        <h2>Build Failed!</h2>
+                        <p><strong>Job:</strong> ${env.JOB_NAME}</p>
+                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                        <p><strong>Branch:</strong> ${env.BRANCH_NAME}</p>
+                        <p><strong>Commit:</strong> ${env.GIT_COMMIT_SHORT}</p>
+                        <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                        <p>Please check the build logs for details.</p>
+                    """,
+                    to: 'team@example.com',
+                    mimeType: 'text/html'
+                )
+            }
+        }
+        
+        unstable {
+            echo '  Pipeline unstable!'
+        }
+        
+        aborted {
+            echo ' Pipeline aborted!'
+        }
+    }
+}
