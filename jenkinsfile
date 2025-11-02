@@ -1,38 +1,26 @@
 pipeline {
     agent any
     
-    tools {
-        nodejs 'NodeJS-22.14.0'
-        dockerTool 'docker-latest'
-    }
-    
     environment {
-        // Docker Registry Configuration
-        DOCKER_REGISTRY = 'docker.io'
-        DOCKER_IMAGE_FRONTEND = 'your-dockerhub-username/smartbus-frontend'
-        DOCKER_IMAGE_BACKEND = 'your-dockerhub-username/smartbus-backend'
-        DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
-        
-        // Git Configuration
-        GIT_COMMIT_SHORT = sh(
-            script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
-            returnStdout: true
-        )
+        // Docker Registry Configuration (disabled for now)
+        // DOCKER_REGISTRY = 'docker.io'
+        // DOCKER_IMAGE_FRONTEND = 'your-dockerhub-username/smartbus-frontend'
+        // DOCKER_IMAGE_BACKEND = 'your-dockerhub-username/smartbus-backend'
         
         // Build Information
         BUILD_DATE = sh(script: "date +%Y-%m-%d-%H-%M", returnStdout: true).trim()
+        NODE_VERSION = '22.x'
     }
     
     stages {
         stage('Checkout') {
             steps {
-                echo ' Checking out code from GitHub...'
+                echo '📥 Checking out code from GitHub...'
                 checkout scm
                 
                 script {
                     // Display build information
-                    echo "Branch: ${env.BRANCH_NAME}"
-                    echo "Commit: ${env.GIT_COMMIT_SHORT}"
+                    echo "Branch: ${env.BRANCH_NAME ?: 'main'}"
                     echo "Build Number: ${env.BUILD_NUMBER}"
                     echo "Build Date: ${env.BUILD_DATE}"
                 }
@@ -44,11 +32,15 @@ pipeline {
                 stage('Backend Dependencies') {
                     steps {
                         dir('backend') {
-                            echo ' Installing backend dependencies...'
+                            echo '📦 Installing backend dependencies...'
                             sh '''
-                                echo "Node version: $(node --version)"
-                                echo "NPM version: $(npm --version)"
-                                npm ci
+                                # Check if Node.js is available
+                                which node || echo "Node.js not found, using system version"
+                                node --version || true
+                                npm --version || true
+                                
+                                # Install dependencies
+                                npm ci || npm install
                             '''
                         }
                     }
@@ -56,11 +48,15 @@ pipeline {
                 stage('Frontend Dependencies') {
                     steps {
                         dir('frontend') {
-                            echo ' Installing frontend dependencies...'
+                            echo '📦 Installing frontend dependencies...'
                             sh '''
-                                echo "Node version: $(node --version)"
-                                echo "NPM version: $(npm --version)"
-                                npm ci
+                                # Check if Node.js is available
+                                which node || echo "Node.js not found, using system version"
+                                node --version || true
+                                npm --version || true
+                                
+                                # Install dependencies
+                                npm ci || npm install
                             '''
                         }
                     }
@@ -168,74 +164,22 @@ pipeline {
         
         stage('Build Docker Images') {
             when {
-                anyOf {
-                    branch 'main'
-                    branch 'develop'
-                    branch 'hai'
-                }
+                expression { return false } // Disabled until Docker is configured
             }
             steps {
                 script {
-                    echo ' Building Docker images...'
-                    
-                    // Build frontend image
-                    dir('frontend') {
-                        sh """
-                            docker build \
-                                -t ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER} \
-                                -t ${DOCKER_IMAGE_FRONTEND}:${GIT_COMMIT_SHORT} \
-                                -t ${DOCKER_IMAGE_FRONTEND}:latest \
-                                -f Dockerfile.dev \
-                                .
-                        """
-                    }
-                    
-                    // Build backend image
-                    dir('backend') {
-                        sh """
-                            docker build \
-                                -t ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER} \
-                                -t ${DOCKER_IMAGE_BACKEND}:${GIT_COMMIT_SHORT} \
-                                -t ${DOCKER_IMAGE_BACKEND}:latest \
-                                -f Dockerfile.dev \
-                                .
-                        """
-                    }
-                    
-                    // List built images
-                    sh 'docker images | grep smartbus'
+                    echo '🐳 Docker build disabled - needs configuration'
                 }
             }
         }
         
         stage('Push Docker Images') {
             when {
-                branch 'main'
+                expression { return false } // Disabled until credentials are configured
             }
             steps {
                 script {
-                    echo ' Pushing Docker images to registry...'
-                    
-                    // Login to Docker Hub
-                    sh """
-                        echo ${DOCKER_CREDENTIALS_PSW} | docker login -u ${DOCKER_CREDENTIALS_USR} --password-stdin
-                    """
-                    
-                    // Push frontend images
-                    sh """
-                        docker push ${DOCKER_IMAGE_FRONTEND}:${BUILD_NUMBER}
-                        docker push ${DOCKER_IMAGE_FRONTEND}:${GIT_COMMIT_SHORT}
-                        docker push ${DOCKER_IMAGE_FRONTEND}:latest
-                    """
-                    
-                    // Push backend images
-                    sh """
-                        docker push ${DOCKER_IMAGE_BACKEND}:${BUILD_NUMBER}
-                        docker push ${DOCKER_IMAGE_BACKEND}:${GIT_COMMIT_SHORT}
-                        docker push ${DOCKER_IMAGE_BACKEND}:latest
-                    """
-                    
-                    echo ' Docker images pushed successfully!'
+                    echo '🐳 Docker push disabled - needs credentials'
                 }
             }
         }
@@ -344,78 +288,37 @@ pipeline {
     
     post {
         always {
-            echo ' Cleaning up...'
-            
-            script {
-                // Clean up Docker images to save space
-                sh '''
-                    # Remove dangling images
-                    docker image prune -f || true
-                    
-                    # Remove old images (keep last 5 builds)
-                    # Uncomment if needed:
-                    # docker images | grep smartbus | tail -n +6 | awk '{print $3}' | xargs -r docker rmi || true
-                '''
-            }
+            echo '🧹 Cleaning up...'
             
             // Archive build artifacts
-            archiveArtifacts artifacts: '**/dist/**, **/.next/**', 
-                           allowEmptyArchive: true,
-                           fingerprint: true
+            script {
+                try {
+                    archiveArtifacts artifacts: '**/dist/**, **/.next/**', 
+                                   allowEmptyArchive: true,
+                                   fingerprint: true
+                } catch (Exception e) {
+                    echo "Could not archive artifacts: ${e.message}"
+                }
+            }
             
             // Clean workspace
             cleanWs()
         }
         
         success {
-            echo ' Pipeline succeeded! '
-            
-            script {
-                // Send success notification
-                emailext (
-                    subject: " Build Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: """
-                        <h2>Build Successful!</h2>
-                        <p><strong>Job:</strong> ${env.JOB_NAME}</p>
-                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-                        <p><strong>Branch:</strong> ${env.BRANCH_NAME}</p>
-                        <p><strong>Commit:</strong> ${env.GIT_COMMIT_SHORT}</p>
-                        <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                    """,
-                    to: 'team@example.com',
-                    mimeType: 'text/html'
-                )
-            }
+            echo '✅ Pipeline succeeded!'
         }
         
         failure {
-            echo ' Pipeline failed!'
-            
-            script {
-                // Send failure notification
-                emailext (
-                    subject: " Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                    body: """
-                        <h2>Build Failed!</h2>
-                        <p><strong>Job:</strong> ${env.JOB_NAME}</p>
-                        <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
-                        <p><strong>Branch:</strong> ${env.BRANCH_NAME}</p>
-                        <p><strong>Commit:</strong> ${env.GIT_COMMIT_SHORT}</p>
-                        <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                        <p>Please check the build logs for details.</p>
-                    """,
-                    to: 'team@example.com',
-                    mimeType: 'text/html'
-                )
-            }
+            echo '❌ Pipeline failed!'
         }
         
         unstable {
-            echo '  Pipeline unstable!'
+            echo '⚠️  Pipeline unstable!'
         }
         
         aborted {
-            echo ' Pipeline aborted!'
+            echo '🛑 Pipeline aborted!'
         }
     }
 }
