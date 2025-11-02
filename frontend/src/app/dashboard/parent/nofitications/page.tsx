@@ -18,7 +18,7 @@ export default function Nofitications() {
               <div className="text-xs text-muted-foreground">2 minutes ago</div>
             </div>
             <div className="text-sm text-muted-foreground ml-[30px]">
-              Emma's bus will arrive at your stop in approximately 5 minutes
+              {"Emma's bus will arrive at your stop in approximately 5 minutes"}
             </div>
           </div>
           {/* Content 2 -------------------------------- */}

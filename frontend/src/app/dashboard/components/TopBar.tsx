@@ -1,6 +1,5 @@
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { BellDotIcon, Settings } from "lucide-react";
-import Link from "next/link";
 
 export const TopBar = ({role}: {role: string}) => {
   return (
