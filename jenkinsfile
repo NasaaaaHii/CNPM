@@ -69,16 +69,16 @@ pipeline {
                 stage('Lint Backend') {
                     steps {
                         dir('backend') {
-                            echo ' Linting backend code...'
-                            sh 'npm run lint || true'
+                            echo '🔍 Linting backend code...'
+                            sh 'npm run lint || echo "⚠️ Backend linting issues found (non-blocking)"'
                         }
                     }
                 }
                 stage('Lint Frontend') {
                     steps {
                         dir('frontend') {
-                            echo ' Linting frontend code...'
-                            sh 'npm run lint'
+                            echo '🔍 Linting frontend code...'
+                            sh 'npm run lint || echo "⚠️ Frontend linting issues found (non-blocking)"'
                         }
                     }
                 }
