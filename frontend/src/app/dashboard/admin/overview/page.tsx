@@ -2,11 +2,13 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Baby, Bus, Route, User } from "lucide-react";
-import MapClient from "@/components/map/MapClient";
+import dynamic from "next/dynamic";
+
+const MapClient = dynamic(() => import("@/components/map/MapClient"), {
+  ssr: false,
+});
 
 export default function Overview() {
-
-
   const cardItem = [
     {
       title: "Total Buses",
@@ -42,16 +44,14 @@ export default function Overview() {
     },
   ];
 
-  const center = { lat: 10.76018, lng: 106.68225 };
-
   return (
     <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">
         <div className="grid grid-cols-4 lg:grid-cols-4 gap-6 md:grid-cols-2">
           {cardItem.map((item) => (
-            <Card
+            <div
               key={item.title}
-              className="hover:shadow-md transition-shadow"
+              className="hover:shadow-md transition-shadow border border-gray-200 rounded-xl"
             >
               <CardHeader className="flex flex-row justify-between items-center">
                 <CardTitle className="text-[15px]">{item.title}</CardTitle>
@@ -63,12 +63,12 @@ export default function Overview() {
                 <div className="text-2xl">{item.value}</div>
                 <p className="text-muted-foreground">{item.change}</p>
               </CardContent>
-            </Card>
+            </div>
           ))}
         </div>
 
         <div>
-          <Card>
+          <Card className="rounded-xl border border-gray-200">
             <CardHeader>
               <CardTitle>Map SSB</CardTitle>
             </CardHeader>
