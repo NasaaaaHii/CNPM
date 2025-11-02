@@ -1,8 +1,8 @@
-# 🛠️ Scripts - Công Cụ Tự Động Hóa
+# Scripts - Công Cụ Tự Động Hóa
 
 Thư mục này chứa các script tự động hóa cho việc cài đặt và quản lý Jenkins CI/CD.
 
-## 📁 Các Script Có Sẵn
+## Các Script Có Sẵn
 
 ### 1. setup-jenkins.sh
 
@@ -10,11 +10,11 @@ Thư mục này chứa các script tự động hóa cho việc cài đặt và 
 
 **Tính năng**:
 
-- ✅ Cài đặt Jenkins với Docker
-- ✅ Cài đặt plugins tự động
-- ✅ Tích hợp GitHub
-- ✅ Cấu hình webhook
-- ✅ Thiết lập bảo mật ban đầu
+- Cài đặt Jenkins với Docker
+- Cài đặt plugins tự động
+- Tích hợp GitHub
+- Cấu hình webhook
+- Thiết lập bảo mật ban đầu
 
 **Cách sử dụng**:
 
@@ -34,11 +34,11 @@ Thư mục này chứa các script tự động hóa cho việc cài đặt và 
 
 **Tính năng**:
 
-- 🚀 Start/stop Jenkins container
-- 📊 Xem logs realtime
-- 💾 Backup/restore dữ liệu Jenkins
-- ✅ Kiểm tra trạng thái container
-- 🔧 Khởi động lại khi cần
+- Start/stop Jenkins container
+- Xem logs realtime
+- Backup/restore dữ liệu Jenkins
+- Kiểm tra trạng thái container
+- Khởi động lại khi cần
 
 **Cách sử dụng**:
 
@@ -77,11 +77,11 @@ Các lệnh:
 
 **Tính năng**:
 
-- 🐳 Build Docker images cho frontend và backend
-- 🚀 Deploy containers
-- 🏥 Health checks tự động
-- ↩️ Rollback khi gặp lỗi
-- 📊 Logs chi tiết
+- Build Docker images cho frontend và backend
+- Deploy containers
+- Health checks tự động
+- Rollback khi gặp lỗi
+- Logs chi tiết
 
 **Cách sử dụng**:
 
@@ -107,7 +107,7 @@ Môi trường:
 ./scripts/build-and-deploy.sh prod
 ```
 
-## 🚀 Hướng Dẫn Sử Dụng Nhanh
+## Hướng Dẫn Sử Dụng Nhanh
 
 ### Lần Đầu Tiên Sử Dụng
 
@@ -153,7 +153,7 @@ cat jenkins_admin_password.txt
 ./scripts/manage-jenkins.sh restore
 ```
 
-## 📋 Chi Tiết Về Jenkins Pipeline
+## Chi Tiết Về Jenkins Pipeline
 
 ### Jenkinsfile - 13 Stages Tự Động
 
@@ -200,7 +200,7 @@ Pipeline tự động chạy khi:
 | Frontend      | 3000  | Next.js app                 |
 | Backend       | 5000  | Express API                 |
 
-## 🛟 Xử Lý Sự Cố
+## Xử Lý Sự Cố
 
 ### Jenkins Không Khởi Động
 
@@ -247,14 +247,14 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 cat jenkins_admin_password.txt
 ```
 
-## 📚 Tài Liệu Tham Khảo
+## Tài Liệu Tham Khảo
 
 - [Jenkins Documentation](https://www.jenkins.io/doc/)
 - [Docker Documentation](https://docs.docker.com/)
 - [Jenkinsfile Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
 - [GitHub Webhooks](https://docs.github.com/en/webhooks)
 
-## 💡 Tips và Best Practices
+## Tips và Best Practices
 
 ### 1. Backup Thường Xuyên
 
@@ -280,20 +280,3 @@ cat jenkins_admin_password.txt
 - Cache node_modules trong Docker
 - Sử dụng multi-stage builds
 - Parallel execution trong Jenkinsfile
-
-## 🤝 Đóng Góp
-
-Nếu phát hiện lỗi hoặc có đề xuất cải thiện scripts:
-
-1. Tạo issue trên GitHub
-2. Hoặc tạo Pull Request với thay đổi
-
----
-
-<div align="center">
-
-**🛠️ Scripts cho Smart Bus System**
-
-Made with ❤️ by Team 2 - CNPM
-
-</div>
