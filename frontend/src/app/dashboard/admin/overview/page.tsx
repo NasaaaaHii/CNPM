@@ -70,7 +70,7 @@ export default function Overview() {
         <div>
           <Card className="rounded-xl border border-gray-200">
             <CardHeader>
-              <CardTitle>Map SSB</CardTitle>
+              <CardTitle>Tổng quan các tuyến đường trong ngày</CardTitle>
             </CardHeader>
             <CardContent className="p-2">
               <div className="w-full h-full rounded-sm">
