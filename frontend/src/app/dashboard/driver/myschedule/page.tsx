@@ -62,7 +62,7 @@ export default function ManagerMySchedule() {
           <div className="ml-1 rounded-xl bg-gray-50 border border-gray-300">
             <div className="pb-8 ml-4 mt-4">
               <h2 className="text-2xl font-semibold leading-none tracking-tight">
-                Today's Route Assignment
+                {"Today's Route Assignment"}
               </h2>
             </div>
             <div className="ml-4 pb-4">

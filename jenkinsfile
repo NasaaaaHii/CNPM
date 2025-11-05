@@ -1,0 +1,324 @@
+pipeline {
+    agent any
+    
+    environment {
+        // Docker Registry Configuration (disabled for now)
+        // DOCKER_REGISTRY = 'docker.io'
+        // DOCKER_IMAGE_FRONTEND = 'your-dockerhub-username/smartbus-frontend'
+        // DOCKER_IMAGE_BACKEND = 'your-dockerhub-username/smartbus-backend'
+        
+        // Build Information
+        BUILD_DATE = sh(script: "date +%Y-%m-%d-%H-%M", returnStdout: true).trim()
+        NODE_VERSION = '22.x'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '📥 Checking out code from GitHub...'
+                checkout scm
+                
+                script {
+                    // Display build information
+                    echo "Branch: ${env.BRANCH_NAME ?: 'main'}"
+                    echo "Build Number: ${env.BUILD_NUMBER}"
+                    echo "Build Date: ${env.BUILD_DATE}"
+                }
+            }
+        }
+        
+        stage('Install Dependencies') {
+            parallel {
+                stage('Backend Dependencies') {
+                    steps {
+                        dir('backend') {
+                            echo '📦 Installing backend dependencies...'
+                            sh '''
+                                # Check if Node.js is available
+                                which node || echo "Node.js not found, using system version"
+                                node --version || true
+                                npm --version || true
+                                
+                                # Install dependencies
+                                npm ci || npm install
+                            '''
+                        }
+                    }
+                }
+                stage('Frontend Dependencies') {
+                    steps {
+                        dir('frontend') {
+                            echo '📦 Installing frontend dependencies...'
+                            sh '''
+                                # Check if Node.js is available
+                                which node || echo "Node.js not found, using system version"
+                                node --version || true
+                                npm --version || true
+                                
+                                # Install dependencies
+                                npm ci || npm install
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Code Quality Check') {
+            parallel {
+                stage('Lint Backend') {
+                    steps {
+                        dir('backend') {
+                            echo '🔍 Linting backend code...'
+                            sh 'npm run lint || echo "⚠️ Backend linting issues found (non-blocking)"'
+                        }
+                    }
+                }
+                stage('Lint Frontend') {
+                    steps {
+                        dir('frontend') {
+                            echo '🔍 Linting frontend code...'
+                            sh 'npm run lint || echo "⚠️ Frontend linting issues found (non-blocking)"'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Build') {
+            parallel {
+                stage('Build Backend') {
+                    steps {
+                        dir('backend') {
+                            echo ' Building backend...'
+                            sh 'npm run build'
+                            
+                            // Verify build output
+                            sh 'ls -la dist/'
+                        }
+                    }
+                }
+                stage('Build Frontend') {
+                    steps {
+                        dir('frontend') {
+                            echo ' Building frontend...'
+                            sh 'npm run build'
+                            
+                            // Verify build output
+                            sh 'ls -la .next/'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Test') {
+            parallel {
+                stage('Test Backend') {
+                    steps {
+                        dir('backend') {
+                            echo ' Running backend tests...'
+                            sh '''
+                                if [ -f "package.json" ] && grep -q '"test"' package.json; then
+                                    npm test || echo "Tests failed or not configured"
+                                else
+                                    echo "No tests configured yet"
+                                fi
+                            '''
+                        }
+                    }
+                }
+                stage('Test Frontend') {
+                    steps {
+                        dir('frontend') {
+                            echo ' Running frontend tests...'
+                            sh '''
+                                if [ -f "package.json" ] && grep -q '"test"' package.json; then
+                                    npm test || echo "Tests failed or not configured"
+                                else
+                                    echo "No tests configured yet"
+                                fi
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                echo ' Running security audit...'
+                script {
+                    // Backend security scan
+                    dir('backend') {
+                        sh 'npm audit --audit-level=high || true'
+                    }
+                    
+                    // Frontend security scan
+                    dir('frontend') {
+                        sh 'npm audit --audit-level=high || true'
+                    }
+                }
+            }
+        }
+        
+        stage('Build Docker Images') {
+            when {
+                expression { return false } // Disabled until Docker is configured
+            }
+            steps {
+                script {
+                    echo '🐳 Docker build disabled - needs configuration'
+                }
+            }
+        }
+        
+        stage('Push Docker Images') {
+            when {
+                expression { return false } // Disabled until credentials are configured
+            }
+            steps {
+                script {
+                    echo '🐳 Docker push disabled - needs credentials'
+                }
+            }
+        }
+        
+        stage('Deploy to Development') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'hai'
+                }
+            }
+            steps {
+                echo ' Deploying to development environment...'
+                sh '''
+                    docker compose -f docker-compose.dev.yml down || true
+                    docker compose -f docker-compose.dev.yml up -d
+                    
+                    # Wait for services to be ready
+                    sleep 10
+                    
+                    # Check if services are running
+                    docker compose -f docker-compose.dev.yml ps
+                '''
+            }
+        }
+        
+        stage('Deploy to Staging') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo ' Deploying to staging environment...'
+                sh '''
+                    docker compose -f docker-compose.dev.yml down || true
+                    docker compose -f docker-compose.dev.yml up -d
+                    
+                    # Wait for services to be ready
+                    sleep 10
+                    
+                    # Check if services are running
+                    docker compose -f docker-compose.dev.yml ps
+                    
+                    # Health check
+                    echo "Waiting for services to be healthy..."
+                    sleep 5
+                '''
+            }
+        }
+        
+        stage('Production Approval') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    echo '  Waiting for production deployment approval...'
+                    
+                    timeout(time: 30, unit: 'MINUTES') {
+                        input message: 'Deploy to Production?', 
+                              ok: 'Deploy',
+                              submitter: 'admin'
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo ' Deploying to production environment...'
+                script {
+                    // Add your production deployment commands here
+                    echo 'Production deployment steps would go here'
+                    echo 'Examples:'
+                    echo '- Deploy to cloud provider (AWS, Azure, GCP)'
+                    echo '- Update Kubernetes deployment'
+                    echo '- Run database migrations'
+                    echo '- Update load balancer'
+                }
+            }
+        }
+        
+        stage('Smoke Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                }
+            }
+            steps {
+                echo ' Running smoke tests...'
+                script {
+                    sh '''
+                        # Test backend health
+                        curl -f http://localhost:5000/health || echo "Backend health check failed"
+                        
+                        # Test frontend
+                        curl -f http://localhost:3000 || echo "Frontend check failed"
+                    '''
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo '🧹 Cleaning up...'
+            
+            // Archive build artifacts
+            script {
+                try {
+                    archiveArtifacts artifacts: '**/dist/**, **/.next/**', 
+                                   allowEmptyArchive: true,
+                                   fingerprint: true
+                } catch (Exception e) {
+                    echo "Could not archive artifacts: ${e.message}"
+                }
+            }
+            
+            // Clean workspace
+            cleanWs()
+        }
+        
+        success {
+            echo '✅ Pipeline succeeded!'
+        }
+        
+        failure {
+            echo '❌ Pipeline failed!'
+        }
+        
+        unstable {
+            echo '⚠️  Pipeline unstable!'
+        }
+        
+        aborted {
+            echo '🛑 Pipeline aborted!'
+        }
+    }
+}

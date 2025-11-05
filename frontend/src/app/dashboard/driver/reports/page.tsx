@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Bell } from "lucide-react";
+
 export default function Reports() {
   const reportsData = [
     {

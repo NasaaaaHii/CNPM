@@ -1,11 +1,6 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Clock } from "lucide-react";
+
 export default function ManagerDayRoutes() {
   const dataRouter = [
     {
@@ -35,7 +30,7 @@ export default function ManagerDayRoutes() {
         <div className="flex flex-col gap-2 px-4 border border-gray-200 rounded-xl">
           <div className="py-4 ml-5">
             <h2 className="text-2xl font-semibold leading-none tracking-tight">
-              Today's Schedule
+              {"Today's Schedule"}
             </h2>
           </div>
           <CardContent className="flex flex-col space-y-4">

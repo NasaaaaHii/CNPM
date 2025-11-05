@@ -1,6 +1,6 @@
 import React from "react";
 import { Phone, Mail, MapPinned } from "lucide-react";
-import { Button } from "../ui/button";
+
 export const Contact = () => {
   return (
     <div className="container mx-auto p-6">

@@ -2,7 +2,11 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Baby, Bus, Route, User } from "lucide-react";
-import MapClient from "@/components/map/MapClient";
+import dynamic from "next/dynamic";
+
+const MapClient = dynamic(() => import("@/components/map/MapClient"), {
+  ssr: false,
+});
 
 export default function Overview() {
   const cardItem = [
@@ -66,13 +70,13 @@ export default function Overview() {
         <div>
           <Card className="rounded-xl border border-gray-200">
             <CardHeader>
-              <CardTitle>Map SSB</CardTitle>
+              <CardTitle>Tổng quan các tuyến đường trong ngày</CardTitle>
             </CardHeader>
             <CardContent className="p-2">
               <div className="w-full h-full rounded-sm">
                 {/* Map */}
                 <MapClient />
-              </div>  
+              </div>
             </CardContent>
           </Card>
         </div>
