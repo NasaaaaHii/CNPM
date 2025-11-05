@@ -29,7 +29,6 @@ export default function TrackingTest({
       position={[lat, lng]}
       previousPosition={prevPos}
       duration={1000}
-      keepAtCenter={true}
     />
   );
 }
