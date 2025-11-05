@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import MapClient from "@/components/map/MapClient";
 
 export default function ManagerMySchedule() {
   const routeName = "Route A";
@@ -103,12 +104,16 @@ export default function ManagerMySchedule() {
           </div>
         </div>
         <div>
-          <div className="border border-gray-300 rounded-xl p-6 flex flex-col">
-            <h2 className="text-2xl font-semibold leading-none tracking-tight">
-              Router Map
-            </h2>
-          </div>
-          <div className=""></div>
+          <Card className="rounded-xl border border-gray-200">
+            <CardHeader>
+              <CardTitle>Map SSB</CardTitle>
+            </CardHeader>
+            <CardContent className="p-2">
+              <div className="w-full h-full rounded-sm">
+                <MapClient />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="border border-gray-200 rounded-xl flex flex-col gap-2 px-4">
