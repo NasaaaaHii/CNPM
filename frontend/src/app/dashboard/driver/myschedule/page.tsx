@@ -12,7 +12,6 @@ import MapClient from "@/components/map/MapClient";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import CheckpointsCard from "./CheckpointsCard";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 export default function ManagerMySchedule() {
   const routeName = "Route A";
   const busNumber = "BUS-001";

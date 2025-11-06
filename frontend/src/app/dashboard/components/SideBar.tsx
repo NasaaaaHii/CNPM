@@ -14,6 +14,8 @@ import {
   LogOut,
   ClipboardCheck,
   BusIcon,
+  MapPinHouse,
+  Bell,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,10 +38,15 @@ export const SideBar = ({ role }: { role: Role }) => {
             icon: <SquareChartGantt />,
           },
           {
+            name: "Bản đồ",
+            path: `/dashboard/admin/realtime-map`,
+            icon: <MapPinHouse />,
+          },
+          {
             name: "Quản lí người dùng",
             path: `/dashboard/admin/users`,
             icon: <User />,
-          }, //driver and parents
+          },
           {
             name: "Quản lí xe Bus",
             path: `/dashboard/admin/bus`,
@@ -54,6 +61,11 @@ export const SideBar = ({ role }: { role: Role }) => {
             name: "Quản lí lịch trình",
             path: `/dashboard/admin/schedules`,
             icon: <CalendarCheck />,
+          },
+          {
+            name: "Thông báo",
+            path: `/dashboard/admin/nofitications`,
+            icon: <Bell />,
           },
           {
             name: "Thống kê",
