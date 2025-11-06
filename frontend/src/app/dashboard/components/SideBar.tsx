@@ -12,6 +12,8 @@ import {
   MessageCircle,
   Send,
   LogOut,
+  ClipboardCheck,
+  BusIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,7 +25,7 @@ type Role = "admin" | "driver" | "parent";
 
 export const SideBar = ({ role }: { role: Role }) => {
   const pathname = usePathname();
-  console.log(pathname)
+  console.log(pathname);
   const menu = useMemo(
     () =>
       ({
@@ -91,6 +93,16 @@ export const SideBar = ({ role }: { role: Role }) => {
             name: "Báo cáo",
             path: `/dashboard/driver/reports`,
             icon: <Send />,
+          },
+          {
+            name: "Kiểm tra học sinh",
+            path: `/dashboard/driver/studentchecklist`,
+            icon: <ClipboardCheck />,
+          },
+          {
+            name: "Kiểm tra xe",
+            path: `/dashboard/driver/checkvehicle`,
+            icon: <BusIcon />,
           },
         ],
       }[role]),
