@@ -1,9 +1,13 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Bus, User, UserCog } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card,CardContent, CardTitle, CardDescription} from "@/components/ui/card";
+
+import { Bus, User, Shield, UserCog } from "lucide-react";
 import Link from "next/link";
+
 import { GeometricBackground } from "@/utils/GeometricBackground";
 import { RoleOption } from "@/types/auth";
+
 
 export default function RoleSelection() {
   const roles: RoleOption[] = [

@@ -28,43 +28,38 @@ export const LoginForm: React.FC<loginFormProps> = ({
           </div>
         )}
 
-        {/* Email Field */}
+        {/* Username Field */}
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-            Email Address
+          <Label
+            htmlFor="username"
+            className="text-sm font-medium text-gray-700"
+          >
+            Username
           </Label>
           <Input
-            id="email"
-            type="email"
-            placeholder="your.email@example.com"
-            value={formData.email}
-            onChange={(e) => handleInputChange("email", e.target.value)}
+            id="username"
+            type="text"
+            placeholder="Enter username"
+            value={formData.username}
+            onChange={(e) => handleInputChange("username", e.target.value)}
             className={`h-12 bg-white/80 backdrop-blur-sm ${
-              errors.email ? "border-red-300 focus:border-red-500" : ""
+              errors.username ? "border-red-300 focus:border-red-500" : ""
             }`}
             required
           />
-          {errors.email && (
-            <p className="text-sm text-red-600">{errors.email}</p>
+          {errors.username && (
+            <p className="text-sm text-red-600">{errors.username}</p>
           )}
         </div>
 
         {/* Password Field */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-700"
-            >
-              Password
-            </Label>
-            <Link
-              href="#"
-              className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              Forgot Password?
-            </Link>
-          </div>
+          <Label
+            htmlFor="password"
+            className="text-sm font-medium text-gray-700"
+          >
+            Password
+          </Label>
           <div className="relative">
             <Input
               id="password"

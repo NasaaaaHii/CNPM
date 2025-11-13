@@ -1,27 +1,33 @@
 export interface LoginFormData {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface LoginFormError {
-  email: string;
+  username: string;
   password: string;
   general: string;
 }
 
-export const validateLoginForm = (formData: LoginFormData): { 
-    isValid: boolean;
-    errors: LoginFormError;
+export const validateLoginForm = (
+  formData: LoginFormData
+): {
+  isValid: boolean;
+  errors: LoginFormError;
 } => {
-  const newErrors: LoginFormError = {email: "", password: "",general: ""}
+  const newErrors: LoginFormError = { username: "", password: "", general: "" };
   let isValid = true;
 
-  // Email validation
-  if (!formData.email) {
-    newErrors.email = "Email is required";
+  // Username validation
+  if (!formData.username) {
+    newErrors.username = "Username is required";
     isValid = false;
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    newErrors.email = "Please enter a valid email address";
+  } else if (formData.username.length < 3) {
+    newErrors.username = "Username must be at least 3 characters";
+    isValid = false;
+  } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+    newErrors.username =
+      "Username can only contain letters, numbers and underscore";
     isValid = false;
   }
 
@@ -33,5 +39,5 @@ export const validateLoginForm = (formData: LoginFormData): {
     newErrors.password = "Password must be at least 6 characters";
     isValid = false;
   }
-  return {isValid: isValid, errors: newErrors};
+  return { isValid: isValid, errors: newErrors };
 };

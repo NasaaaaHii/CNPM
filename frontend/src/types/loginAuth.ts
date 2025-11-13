@@ -1,5 +1,5 @@
 import { UserRole } from "./auth";
-import { ReactNode,FormEvent } from "react";
+import { ReactNode, FormEvent } from "react";
 
 export interface LoginProps {
   role: UserRole;
@@ -17,14 +17,14 @@ export interface loginRoleConfig {
 
 export interface loginFormProps {
   formData: {
-    email: string;
+    username: string;
     password: string;
   };
   errors: {
-    email: string;
+    username: string;
     password: string;
     general: string;
-  }
+  };
   loading: boolean;
   showPassword: boolean;
   config: {

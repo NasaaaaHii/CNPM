@@ -1,18 +1,36 @@
 "use client";
 
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import TrackingTest from "./TrackingTest";
 
-
-
-const Map = dynamic(() => import("./MapCore"), {
-  ssr: false,
-  loading: () => <div className="h-full w-full flex items-center justify-center">Đang tải bản đồ....</div>
-})
+// Fix lỗi icon mặc định của Leaflet
+delete (
+  L.Icon.Default.prototype as unknown as {
+    _getIconUrl?: string | (() => string);
+  }
+)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
 export default function MapClient() {
-  const school: [number, number] = useMemo(() => [10.76006, 106.68229], []);
-  const home: [number, number] = useMemo(() => [10.76102, 106.63001], []);
+  const school: [number, number] = [10.76006, 106.68229];
+  const home: [number, number] = [10.76102, 106.63001];
+  const routes = useMemo(() => [home, school], [home, school]);
 
   const [busPos, setBusPos] = useState({ lat: home[0], lng: home[1] });
   const stepRef = useRef(0);
@@ -20,7 +38,6 @@ export default function MapClient() {
   const totalSteps = 100;
 
   useEffect(() => {
-    // Logic cập nhật vị trí vẫn an toàn ở đây
     const interval = setInterval(() => {
       stepRef.current += directionRef.current;
       if (stepRef.current >= totalSteps || stepRef.current <= 0) {
@@ -39,9 +56,23 @@ export default function MapClient() {
   }, [home, school]);
 
   return (
-    <div className="w-full h-[800px]">
-      {/* Truyền props xuống Map */}
-      <Map school={school} home={home} busPos={busPos} />
+    <div className="w-full h-[800px] rounded-2xl overflow-hidden shadow-md">
+      <MapContainer center={school} zoom={14} className="h-full w-full">
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        <Marker position={home}>
+          <Popup>My Home</Popup>
+        </Marker>
+        <Marker position={school}>
+          <Popup>SGU</Popup>
+        </Marker>
+        <Polyline positions={routes} color="blue" />
+
+        <TrackingTest data={busPos} />
+      </MapContainer>
     </div>
   );
 }

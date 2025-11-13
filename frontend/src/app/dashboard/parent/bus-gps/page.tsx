@@ -65,7 +65,7 @@ export default function BusGp() {
               Real-Time GPS Tracking
             </div>
             <div className="text-sm text-muted-foreground max-w-[40%] text-center">
-              {"Track your child's bus location in real-time. The map shows current position, route path, and estimated arrival time."}
+              Track your child's bus location in real-time. The map shows current position, route path, and estimated arrival time.
             </div>
             <div className="p-[15px_15px] bg-[#ffffff] flex flex-col gap-[5px] rounded-lg shadow-[rgba(0, 0, 0, 0.24)] shadow-md">
               <div className="flex items-center gap-[12px]">

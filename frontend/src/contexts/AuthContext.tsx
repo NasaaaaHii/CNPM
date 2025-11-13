@@ -1,9 +1,11 @@
 "use client";
 
-import React, { createContext, useState, useEffect } from "react";
-import type {User, UserRole, AuthContextType} from "@/types/auth";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import type { User, UserRole, AuthContextType } from "@/types/auth";
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -19,34 +21,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         localStorage.removeItem("user");
         localStorage.removeItem("authToken");
-        console.log("Errors: ", error)
+        console.log("Errors: ", error);
       }
     }
     setLoading(false);
   }, []);
 
   const login = async (
-    email: string,
+    username: string,
     password: string,
     role: UserRole
   ): Promise<boolean> => {
     setLoading(true);
 
     try {
-      // Demo
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name: email.split("@")[0],
-        role,
-      };
+      // Call real API with accountType parameter
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          password,
+          accountType: role, // ✅ FIX: Thêm accountType vào request
+        }),
+      });
 
-      // luu data
-      localStorage.setItem("user", JSON.stringify(mockUser));
-      localStorage.setItem("authToken", "demo-token-" + Date.now());
+      const data = await response.json();
 
-      setUser(mockUser);
-      return true;
+      if (response.ok && data.success) {
+        const userData: User = {
+          id: data.data.user.user_id, // ✅ FIX: Sử dụng user_id từ backend
+          email: data.data.user.user_name || "", // ✅ FIX: Backend không có email, dùng user_name
+          name: data.data.user.user_name, // ✅ FIX: Dùng user_name
+          role: data.data.accountType, // ✅ FIX: accountType từ backend
+        };
+
+        // Save token and user data
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("authToken", data.data.token);
+
+        setUser(userData);
+        return true;
+      }
+
+      return false;
     } catch (error) {
       console.error("Login failed:", error);
       return false;
@@ -71,4 +89,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-

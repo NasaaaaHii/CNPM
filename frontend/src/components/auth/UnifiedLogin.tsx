@@ -12,11 +12,11 @@ import { LoginForm } from "@/components/form/LoginForm";
 export default function UnifiedLogin({ role }: LoginProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   const [errors, setErrors] = useState({
-    email: "",
+    username: "",
     password: "",
     general: "",
   });
@@ -51,25 +51,25 @@ export default function UnifiedLogin({ role }: LoginProps) {
       return;
     }
 
-    setErrors({ email: "", password: "", general: "" });
+    setErrors({ username: "", password: "", general: "" });
 
     try {
-      const success = await login(formData.email, formData.password, role);
+      const success = await login(formData.username, formData.password, role);
 
       if (success) {
-        if(role === "admin") router.push("/dashboard/admin/overview")
-        if(role === "driver") router.push("/dashboard/driver/myschedule")
-        if(role === "parent") router.push("/dashboard/parent/bus-gps")
+        if (role === "admin") router.push("/dashboard/admin/overview");
+        if (role === "driver") router.push("/dashboard/driver/myschedule");
+        if (role === "parent") router.push("/dashboard/parent/bus-gps");
       } else {
         setErrors({
-          email: "",
+          username: "",
           password: "",
-          general: "Invalid email or password. Please try again.",
+          general: "Invalid username or password. Please try again.",
         });
       }
     } catch (error) {
       setErrors({
-        email: "",
+        username: "",
         password: "",
         general: "Login failed. Please try again later.",
       });

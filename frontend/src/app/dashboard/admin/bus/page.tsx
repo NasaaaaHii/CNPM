@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,11 +9,8 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Trash, UserRoundPen, Bus } from "lucide-react";
+import { Trash, UserRoundPen, User, Bus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import BusDialog from "./BusDialog";
-
 export default function ManagerBus() {
   const buses = [
     {
@@ -53,14 +49,6 @@ export default function ManagerBus() {
       status: true,
     },
   ];
-  const [dialog, setDialog] = useState({ open: false, mode: "add" });
-  const handleOpen = (mode: string) => {
-    setDialog({ open: true, mode });
-  };
-
-  const handleClose = (open) => {
-    setDialog((prev) => ({ ...prev, open }));
-  };
   return (
     <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
       <div className="space-y-6">
@@ -71,7 +59,6 @@ export default function ManagerBus() {
               <Button
                 variant={"secondary"}
                 className="bg-blue-500 hover:bg-blue-700 hover:text-white"
-                onClick={() => handleOpen("add")}
               >
                 <Bus />
                 Add new Bus
@@ -116,14 +103,13 @@ export default function ManagerBus() {
                     <TableCell className="flex gap-2">
                       <Button
                         variant={"secondary"}
-                        className="hover:bg-orange-400 border border-gray-300"
-                        onClick={() => handleOpen("edit")}
+                        className="hover:bg-orange-400"
                       >
                         <UserRoundPen />
                       </Button>
                       <Button
                         variant={"secondary"}
-                        className="hover:bg-red-500 border border-gray-300"
+                        className="hover:bg-red-500"
                       >
                         <Trash />
                       </Button>
@@ -135,12 +121,6 @@ export default function ManagerBus() {
           </CardContent>
         </Card>
       </div>
-      {/* Dialog */}
-      <BusDialog
-        open={dialog.open}
-        mode={dialog.mode}
-        onOpenChange={handleClose}
-      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Bus, User, Shield } from "lucide-react";
-import { loginRoleConfig } from "@/types/loginAuth";
+import { loginRoleConfig, LoginProps } from "@/types/loginAuth";
 
 export const roleConfig: Record<string , loginRoleConfig> = {
   parent: {

@@ -1,188 +1,150 @@
 "use client";
-import { Navigation, TriangleAlert } from "lucide-react";
+import { Navigation } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import MapClient from "@/components/map/MapClient";
-import { Progress } from "@/components/ui/progress";
-import { useState } from "react";
-import CheckpointsCard from "./CheckpointsCard";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 export default function ManagerMySchedule() {
   const routeName = "Route A";
   const busNumber = "BUS-001";
-  const timeRange = "07:00 AM - 08:30 AM";
+  const timeRange = "07:00 - 08:30";
   const totalStops = 8;
   const totalStudents = 12;
 
   const dataStudents = [
     {
-      id: 1,
-      mark: "School - Start Point",
-      location: "123 Education Ave",
+      name: "Emma Johnson",
+      grade: "Grade 3",
+      location: "Oak Street",
       time: "07:15 AM",
-      student: 0,
     },
     {
-      id: 2,
-      mark: "Oak Street",
-      location: "456 Oak St",
-      time: "07:15 AM",
-      student: 2,
-    },
-    {
-      id: 3,
-      mark: "Maple Avenue",
-      location: "789 Maple Ave",
+      name: "Liam Smith",
+      grade: "Grade 4",
+      location: "Maple Avenue",
       time: "07:22 AM",
-      student: 1,
     },
     {
-      id: 4,
-      mark: "Pine Road",
-      location: "321 Pine Rd",
+      name: "Olivia Brown",
+      grade: "Grade 6",
+      location: "Pine Road",
       time: "07:28 AM",
-      student: 2,
     },
     {
-      id: 5,
-      mark: "School - End Point",
-      location: "123 Education Ave",
-      time: "08:00 AM",
-      student: 0,
+      name: "Noah Davis",
+      grade: "Grade 5",
+      location: "Cedar Lane",
+      time: "07:35 AM",
+    },
+    {
+      name: "Ava Wilson",
+      grade: "Grade 4",
+      location: "Birch Boulevard",
+      time: "07:40 AM",
+    },
+    {
+      name: "Ethan Martinez",
+      grade: "Grade 6",
+      location: "Birch Court",
+      time: "07:48 AM",
     },
   ];
-  const [progress, setProgress] = useState(13);
-  const [openEmergency, setOpenEmergency] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   return (
-    <section className="flex-1 overflow-y-auto p-8 bg-gray-50">
-      <div className="space-y-6">
-        <div className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-gray-300 border-l-5 border-l-green-600">
-          <div className="flex flex-col gap-4 p-8">
-            <div className="text-xl font-medium">Today's Route Progress</div>
-            <div className="flex flex-col gap-1">
-              <div className="flex flex-row justify-between gap-4">
-                <p className="text-md font-medium">Route Completion</p>
-                <p className="text-md font-medium">0 / 8 stops</p>
-              </div>
-              <Progress value={progress} className="bg-gray-300 h-2" />
+    <div className="bg-gray-50">
+      <div className="container mx-auto px-4 md:px-6 py-6 space-y-6">
+        <div className="bg-green-600 rounded-2xl">
+          <div className="ml-1 rounded-xl bg-gray-50 border border-gray-300">
+            <div className="pb-8 ml-4 mt-4">
+              <h2 className="text-2xl font-semibold leading-none tracking-tight">
+                Today's Route Assignment
+              </h2>
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              <div className="flex flex-col">
-                <p className="font-normal text-lg text-gray-700">Route</p>
-                <p className="font-normal text-xl">{routeName}</p>
+            <div className="ml-4 pb-4">
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground ">Route</p>
+                    <p className="text-xl">{routeName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Bus Number</p>
+                    <p className="text-xl">{busNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Time</p>
+                    <p className="text-xl">{timeRange}</p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Stops</p>
+                    <p className="text-xl">{totalStops} stops</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Total Students
+                    </p>
+                    <p className="text-xl">{totalStudents} students</p>
+                  </div>
+                  <div className="pt-2 flex flex-row justify-center gap-4">
+                    <button className="w-full inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg mr-24">
+                      <Navigation size={18} />
+                      Start Navigation
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <p className="font-normal text-lg text-gray-700">Bus Number</p>
-                <p className="font-normal text-xl">{busNumber}</p>
-              </div>
-              <div className="flex flex-col">
-                <p className="font-normal text-lg text-gray-700">Time</p>
-                <p className="font-normal text-xl">{timeRange}</p>
-              </div>
-              <div className="flex flex-col">
-                <p className="font-normal text-lg text-gray-700">Students</p>
-                <p className="font-normal text-xl">
-                  {totalStudents} passengers
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-start gap-4 mt-4">
-              <button className="bg-green-600 rounded-lg px-3 py-2 flex flex-row gap-3 items-center cursor-pointer">
-                <Navigation size={20} color="white" strokeWidth={2.5} />
-                <p className="font-semibold text-md text-white ">
-                  Start Navigation
-                </p>
-              </button>
-              <button
-                onClick={() => setOpenEmergency(true)}
-                className="bg-red-700 rounded-lg px-3 py-2 flex flex-row gap-3 items-center cursor-pointer"
-              >
-                <TriangleAlert size={20} color="white" strokeWidth={2.5} />
-                <p className="font-semibold text-md text-white ">
-                  Report Emergency
-                </p>
-              </button>
             </div>
           </div>
         </div>
-        <Dialog open={openEmergency} onOpenChange={setOpenEmergency}>
-          <DialogContent className="bg-white w-[90vw] sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-semibold">
-                Report Vehicle Emergency
-              </DialogTitle>
-              <DialogDescription className="text-gray-700 font-normal text-md">
-                Report vehicle failure or emergency. Admin will be notified and
-                nearest driver will be assigned
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex items-start flex-1 gap-1 flex-col">
-              <p className="font-semibold text-md">Emergency Type</p>
-              <select
-                name=""
-                id=""
-                className="w-full mt-2 p-2 rounded-md border border-gray-200"
-              >
-                <option value="">Vehicle Breakdown</option>
-                <option value="">Accident</option>
-                <option value="">Medical Emergency</option>
-                <option value="">Other</option>
-              </select>
-            </div>
-            <div className="flex items-start flex-1 gap-1 flex-col">
-              <p className="font-semibold text-md">Details</p>
-              <textarea
-                className="resize-none border-input placeholder:text-muted-foreground w-full border border-gray-200 rounded-md p-2"
-                placeholder="Describe the emergency situation..."
-              ></textarea>
-            </div>
-            <DialogFooter>
-              <button
-                className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100"
-                onClick={() => setOpenEmergency(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-red-700 text-white rounded-lg px-3 py-2 hover:bg-red-800"
-                onClick={() => {
-                  setOpenEmergency(false);
-                }}
-              >
-                Confirm report
-              </button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        <div className="grid grid-cols-2 gap-8">
-          <div className="shadow-lg rounded-xl border border-gray-300 p-8 flex flex-col gap-4">
-            <p className="text-xl font-medium">Route Checkpoints</p>
-            {dataStudents.map((data) => (
-              <CheckpointsCard
-                id={data.id}
-                mark={data.mark}
-                location={data.location}
-                time={data.time}
-                student={data.student}
-                key={data.id}
-                selected={selectedId === data.id}
-                onSelect={() =>
-                  setSelectedId((prev) => (prev === data.id ? null : data.id))
-                }
-              />
-            ))}
+        <div>
+          <div className="border border-gray-300 rounded-xl p-6 flex flex-col">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">
+              Router Map
+            </h2>
           </div>
-          <div className="shadow-lg rounded-xl border border-gray-300 p-8 flex flex-col gap-4">
-            <p className="text-xl font-medium">Route Map</p>
+          <div className=""></div>
+        </div>
+
+        <div className="border border-gray-200 rounded-xl flex flex-col gap-2 px-4">
+          <div className="pb-3 pt-5">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight">
+              Student Pickup List
+            </h2>
+          </div>
+          <div>
+            {dataStudents.map((student, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center gap-4 border border-gray-200 rounded-lg p-4 mb-4"
+              >
+                <div className="flex-1">
+                  <p className="text-xl mb-2">{student.name}</p>
+                  <div className="flex flex-row justify-start gap-4">
+                    <p className="text-sm text-muted-foreground">
+                      {student.grade}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      • {student.location}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      • {student.time}
+                    </p>
+                  </div>
+                </div>
+                <button className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                  Check In
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
