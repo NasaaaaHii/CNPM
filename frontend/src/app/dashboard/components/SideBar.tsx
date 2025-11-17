@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Send,
   LogOut,
+  History
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -66,7 +67,7 @@ export const SideBar = ({ role }: { role: Role }) => {
             icon: <MapPin />,
           },
           {
-            name: "Trạng thái con",
+            name: "My children",
             path: `/dashboard/parent/child-status`,
             icon: <Baby />,
           },
@@ -74,6 +75,11 @@ export const SideBar = ({ role }: { role: Role }) => {
             name: "Thông báo",
             path: `/dashboard/parent/nofitications`,
             icon: <MessageCircle />,
+          },
+          {
+            name: "Lịch sử chuyến đi",
+            path: `/dashboard/parent/trip-history`,
+            icon: <History />,
           },
         ],
         driver: [
