@@ -1,110 +1,86 @@
+import { Navigation, Clock, Phone, Send, CircleX } from "lucide-react";
+
+
 export default function ManagerChildrenStatus() {
   return (
-    <div className="flex flex-row flex-wrap justify-center items-start w-[100%] min-h-[100%] p-[30px] bg-[#f9fafb] gap-[20px]">
-      {/* My Children ----------------------------------------------------------------------------- */}
-      <div className="w-full max-h-[45vh] overflow-y-auto p-[20px_30px] bg-[#ffffff] rounded-xl border border-solid border-[#e5e5e5]">
-        <div className="text-[1.5em]">
-          <p>My Children</p>
-        </div>
-        {/* Trip 1 -------------------------------- */}
-        <div className="flex flex-col mt-[50px] gap-[20px] p-[20px] rounded-xl border border-[#e5e5e5]">
-          <div className="flex justify-between items-start">
-            <div className="flex-1 flex flex-col justify-between gap-[10px]">
-              <div className="">
-                <div className="text-[1em]">Emma Johnson</div>
-                <div className="text-sm text-muted-foreground">Grade 5, Section A</div>
-              </div>
-            </div>
-            <div className="w-fit bg-blue-600 p-[5px_10px] rounded-lg">
-              <div className="text-white text-sm font-semibold">Active</div>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <div className="w-[49%]">
-              <div className="text-sm text-muted-foreground">Bus Number</div>
-              <div className="text-[1em]">BUS001</div>
-            </div>
-            <div className="w-[50%]">
-              <div className="text-sm text-muted-foreground">Route</div>
-              <div className="text-[1em]">Route A</div>
-            </div>
+    <div className="flex flex-row flex-wrap justify-center items-start w-full min-h-full p-[30px] bg-[#f9fafb] gap-5">
+      {/* Child 1 ----------------------------------------------------------------------------- */}
+      <div className="w-full flex flex-col gap-5 p-[20px_30px] bg-[#ffffff] rounded-xl border border-solid border-[#e5e5e5]">
+        <div className="flex flex-row justify-between">
+          <p className="text-lg">Emma Johnson</p>
+          <div className="w-fit bg-blue-600 px-3 py-1 rounded-lg border border-blue-600">
+            <div className="text-white text-xs font-medium">Active</div>
           </div>
         </div>
-        {/* Trip 2 -------------------------------- */}
-        <div className="flex flex-col mt-[50px] gap-[20px] p-[20px] rounded-xl border border-[#e5e5e5]">
-          <div className="flex justify-between items-start">
-            <div className="flex-1 flex flex-col justify-between gap-[10px]">
-              <div className="">
-                <div className="text-[1em]">Emma Johnson</div>
-                <div className="text-sm text-muted-foreground">Grade 5, Section A</div>
-              </div>
+
+        <div className="w-full flex flex-row items-center">
+          <div className="rounded-full bg-blue-50">
+            <div className="w-25 h-25 flex justify-center items-center text-blue-600">Emma</div>
+          </div>
+        </div>
+
+        <div className="w-full flex flex-row">
+          <div className="w-[50%] flex flex-col justify-between gap-2.5">
+            <div className="">
+              <div className="text-sm text-gray-500">Grade</div>
+              <div className="text-base">Grade 5</div>
             </div>
-            <div className="w-fit bg-blue-600 p-[5px_10px] rounded-lg">
-              <div className="text-white text-sm font-semibold">Active</div>
+            <div className="">
+              <div className="text-sm text-gray-500">Bus Number</div>
+              <div className="text-base">BUS001</div>
             </div>
           </div>
-          <div className="flex items-center">
-            <div className="w-[49%]">
-              <div className="text-sm text-muted-foreground">Bus Number</div>
-              <div className="text-[1em]">BUS001</div>
+          <div className="w-[50%] flex flex-col justify-between gap-2.5">
+            <div className="">
+              <div className="text-sm text-gray-500">Section</div>
+              <div className="text-base">A</div>
             </div>
-            <div className="w-[50%]">
-              <div className="text-sm text-muted-foreground">Route</div>
-              <div className="text-[1em]">Route A</div>
+            <div className="">
+              <div className="text-sm text-gray-500">Route</div>
+              <div className="text-base">Route A</div>
+            </div>
+          </div>
+        </div>
+      </div>
+            {/* Child 2 ----------------------------------------------------------------------------- */}
+      <div className="w-full flex flex-col gap-5 p-[20px_30px] bg-[#ffffff] rounded-xl border border-solid border-[#e5e5e5]">
+        <div className="flex flex-row justify-between">
+          <p className="text-lg">Oliver Johnson</p>
+          <div className="w-fit bg-blue-600 px-3 py-1 rounded-lg border border-blue-600">
+            <div className="text-white text-xs font-medium">Active</div>
+          </div>
+        </div>
+
+        <div className="w-full flex flex-row items-center">
+          <div className="rounded-full bg-blue-50">
+            <div className="w-25 h-25 flex justify-center items-center text-blue-600">Oliver</div>
+          </div>
+        </div>
+
+        <div className="w-full flex flex-row">
+          <div className="w-[50%] flex flex-col justify-between gap-2.5">
+            <div className="">
+              <div className="text-sm text-gray-500">Grade</div>
+              <div className="text-base">Grade 3</div>
+            </div>
+            <div className="">
+              <div className="text-sm text-gray-500">Bus Number</div>
+              <div className="text-base">BUS002</div>
+            </div>
+          </div>
+          <div className="w-[50%] flex flex-col justify-between gap-2.5">
+            <div className="">
+              <div className="text-sm text-gray-500">Section</div>
+              <div className="text-base">B</div>
+            </div>
+            <div className="">
+              <div className="text-sm text-gray-500">Route</div>
+              <div className="text-base">Route B</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Trip History ----------------------------------------------------------------------------- */}
-      <div className="w-full p-[20px_30px] bg-[#ffffff] rounded-xl border border-solid border-[#e5e5e5]">
-        <div className="text-[1.5em]">
-          Trip History
-        </div>
-        <div className="mt-[50px] rounded-xl flex flex-col">
-          {/* Column grid ----------------------------- */}
-          <div className="grid grid-cols-5 font-semibold gap-x-10 hover:bg-[#f5f5f7] p-2 items-center">
-            <div className="">Date</div>
-            <div className="">Trip Type</div>
-            <div className="">Pickup Time</div>
-            <div className="">Drop-off Time</div>
-            <div className="">Status</div>
-          </div>
-          {/* Row grid ----------------------------- */}
-          {/* Row grid 1 ----------------------------- */}
-          <div className="grid grid-cols-5 text-sm gap-x-10 hover:bg-[#f5f5f7] p-2 items-center border-t border-t-[#e5e5e5]">
-            <div className="">2025-10-03</div>
-            <div className="">Morning</div>
-            <div className="">07:15 AM</div>
-            <div className="">08:05 AM</div>
-            <div className="text-[#ffffff] font-semibold rounded-lg bg-green-600 w-fit p-[5px]">Completed</div>
-          </div>
-          {/* Row grid 2 ----------------------------- */}
-          <div className="grid grid-cols-5 text-sm gap-x-10 hover:bg-[#f5f5f7] p-2 items-center border-t border-t-[#e5e5e5]">
-            <div className="">2025-10-02</div>
-            <div className="">Morning</div>
-            <div className="">07:16 AM</div>
-            <div className="">08:07 AM</div>
-            <div className="text-[#ffffff] font-semibold rounded-lg bg-green-600 w-fit p-[5px]">Completed</div>
-          </div>
-          {/* Row grid 3 ----------------------------- */}
-          <div className="grid grid-cols-5 text-sm gap-x-10 hover:bg-[#f5f5f7] p-2 items-center border-t border-t-[#e5e5e5]">
-            <div className="">2025-10-02</div>
-            <div className="">Afternoon</div>
-            <div className="">02:00 PM</div>
-            <div className="">02:48 PM</div>
-            <div className="text-[#ffffff] font-semibold rounded-lg bg-green-600 w-fit p-[5px]">Completed</div>
-          </div>
-          {/* Row grid 4 ----------------------------- */}
-          <div className="grid grid-cols-5 text-sm gap-x-10 hover:bg-[#f5f5f7] p-2 items-center border-t border-t-[#e5e5e5]">
-            <div className="">2025-10-01</div>
-            <div className="">Morning</div>
-            <div className="">07:14 AM</div>
-            <div className="">08:04 AM</div>
-            <div className="text-[#ffffff] font-semibold rounded-lg bg-green-600 w-fit p-[5px]">Completed</div>
-          </div>
-        </div>
-      </div>
     </div>
-  );
+  )
 };
