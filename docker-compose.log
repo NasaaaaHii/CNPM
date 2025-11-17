@@ -1,0 +1,6 @@
+nohup: ignoring input
+time="2025-11-17T20:33:24+07:00" level=warning msg="/home/thanhhai/Documents/CNPM/CNPM/docker-compose.dev.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Container frontend_dev  Recreate
+ Container frontend_dev  Recreated
+ Container jenkins_dev  Starting
+Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint jenkins_dev (2a64dc3b58750fd1cc85dc07f71c0e44f41df2649d7a470386fb3580d158f114): Bind for 0.0.0.0:50000 failed: port is already allocated

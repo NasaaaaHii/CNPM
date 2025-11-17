@@ -1,9 +1,37 @@
+version: '3.8'
+
 services:
+  # Jenkins CI/CD Server
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins_dev
+    restart: unless-stopped
+    privileged: true
+    user: root
+    ports:
+      - "8081:8080"      # Jenkins Web UI (port 8081)
+      - "50001:50000"    # Jenkins agent communication (đổi từ 50000 sang 50001)
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/workspace
+    environment:
+      - JENKINS_OPTS=--prefix=/jenkins
+    networks:
+      - smartbus-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/login || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: backend_dev
+    restart: unless-stopped
     ports:
       - "5000:5000"
     volumes:
@@ -15,17 +43,23 @@ services:
     user: node
     environment:
       - NODE_ENV=development
+    networks:
+      - smartbus-network
+    depends_on:
+      - jenkins
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: frontend_dev
+    restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     # env_file:
     #   - ./frontend/.env
     depends_on:
@@ -34,3 +68,14 @@ services:
     user: node
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+    networks:
+      - smartbus-network
+
+volumes:
+  jenkins_home:
+    name: jenkins_home_dev
+
+networks:
+  smartbus-network:
+    driver: bridge
