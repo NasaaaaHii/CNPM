@@ -73,12 +73,12 @@ export default function ManagerRoutes() {
       status: true,
     },
   ];
-  const [dialog, setDialog] = useState({ open: false, mode: "add" });
-  const handleOpen = (mode: string) => {
+  const [dialog, setDialog] = useState<{ open: boolean; mode: "add" | "edit" | "read" }>({ open: false, mode: "add" });
+  const handleOpen = (mode: "add" | "edit" | "read") => {
     setDialog({ open: true, mode });
   };
 
-  const handleClose = (open) => {
+  const handleClose = (open: boolean) => {
     setDialog((prev) => ({ ...prev, open }));
   };
   return (
