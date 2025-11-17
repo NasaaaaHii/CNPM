@@ -1,282 +1,571 @@
-# Scripts - Công Cụ Tự Động Hóa
+# Scripts - Cong Cu Tu Dong Hoa
 
-Thư mục này chứa các script tự động hóa cho việc cài đặt và quản lý Jenkins CI/CD.
+Thu muc nay chua cac script tu dong hoa cho viec cai dat va quan ly du an Smart Bus System.
 
-## Các Script Có Sẵn
+## Danh Sach Scripts
 
-### 1. setup-jenkins.sh
+### Scripts Dang Su Dung (Active)
 
-**Mục đích**: Cài đặt và cấu hình Jenkins tự động
+| Script                   | Muc dich                             | Do uu tien |
+| ------------------------ | ------------------------------------ | ---------- |
+| `setup-all.sh`           | **Setup toan bo du an 1 lenh**       | Cao nhat   |
+| `check-jenkins-build.sh` | **Kiem tra Jenkins truoc khi build** | Cao        |
+| `manage-jenkins.sh`      | Quan ly Jenkins container            | Trung binh |
+| `health-check.sh`        | Kiem tra health cac services         | Trung binh |
 
-**Tính năng**:
+### Scripts Legacy (Khong khuyen nghi)
 
-- Cài đặt Jenkins với Docker
-- Cài đặt plugins tự động
-- Tích hợp GitHub
-- Cấu hình webhook
-- Thiết lập bảo mật ban đầu
+| Script                  | Ly do              | Thay the bang  |
+| ----------------------- | ------------------ | -------------- |
+| `setup-jenkins.sh`      | Phuc tap, can sudo | `setup-all.sh` |
+| `setup-jenkins-sudo.sh` | Phuc tap, can sudo | `setup-all.sh` |
 
-**Cách sử dụng**:
+### Files Khac
+
+- `jenkins_admin_password.txt` - Mat khau Jenkins admin (tu dong tao)
+- `README.md` - File nay
+
+---
+
+## Huong Dan Su Dung
+
+### 1. setup-all.sh (KHUYEN NGHI)
+
+**Muc dich**: Setup toan bo du an tu dong - Jenkins, Backend, Frontend
+
+**Tinh nang**:
+
+- Kiem tra Docker, Docker Compose
+- Tao file .env cho backend
+- Khoi dong Jenkins, Backend, Frontend
+- Cai Node.js vao Jenkins container
+- Kiem tra health tat ca services
+- Hien thi thong tin truy cap
+
+**Cach su dung**:
 
 ```bash
-./scripts/setup-jenkins.sh
+# Tu thu muc goc project
+bash scripts/setup-all.sh
 ```
 
-**Sau khi chạy**:
+**Ket qua mong doi**:
 
-- Jenkins chạy tại: http://localhost:8080
-- Mật khẩu admin được lưu trong file `jenkins_admin_password.txt`
-- Pipeline tự động được tạo cho dự án
+- Jenkins: http://localhost:8081
+- Backend: http://localhost:5000
+- Frontend: http://localhost:3000
 
-### 2. manage-jenkins.sh
+---
 
-**Mục đích**: Quản lý vòng đời Jenkins
+### 2. check-jenkins-build.sh
 
-**Tính năng**:
+**Muc dich**: Kiem tra Jenkins truoc khi build va huong dan cau hinh
+
+**Tinh nang**:
+
+- Kiem tra Jenkins container dang chay
+- Kiem tra Node.js da cai dat
+- Tu dong cai Node.js neu thieu
+- Kiem tra Jenkinsfile hop le
+- Hien thi huong dan build chi tiet
+
+**Cach su dung**:
+
+```bash
+# Chay truoc khi build Jenkins
+bash scripts/check-jenkins-build.sh
+```
+
+**Khi nao dung**:
+
+- Truoc khi click "Build Now" trong Jenkins
+- Khi build Jenkins bi loi
+- Sau khi cap nhat code
+
+---
+
+### 3. manage-jenkins.sh
+
+**Muc dich**: Quan ly vong doi Jenkins container
+
+**Tinh nang**:
 
 - Start/stop Jenkins container
 - Xem logs realtime
-- Backup/restore dữ liệu Jenkins
-- Kiểm tra trạng thái container
-- Khởi động lại khi cần
+- Backup/restore du lieu Jenkins
+- Kiem tra trang thai container
+- Khoi dong lai khi can
 
-**Cách sử dụng**:
+**Cach su dung**:
 
 ```bash
-./scripts/manage-jenkins.sh [lệnh]
+./scripts/manage-jenkins.sh [lenh]
 
-Các lệnh:
-  start    - Khởi động Jenkins
-  stop     - Dừng Jenkins
-  restart  - Khởi động lại Jenkins
-  status   - Kiểm tra trạng thái
+Cac lenh:
+  start    - Khoi dong Jenkins
+  stop     - Dung Jenkins
+  restart  - Khoi dong lai Jenkins
+  status   - Kiem tra trang thai
   logs     - Xem logs
-  backup   - Tạo backup
-  restore  - Khôi phục từ backup
 ```
 
-**Ví dụ**:
+**Vi du**:
 
 ```bash
-# Khởi động Jenkins
+# Khoi dong Jenkins
 ./scripts/manage-jenkins.sh start
 
 # Xem logs
 ./scripts/manage-jenkins.sh logs
 
-# Tạo backup
-./scripts/manage-jenkins.sh backup
-
-# Kiểm tra trạng thái
+# Kiem tra trang thai
 ./scripts/manage-jenkins.sh status
 ```
 
-### 3. build-and-deploy.sh
+---
 
-**Mục đích**: Tự động hóa build và deploy
+### 4. health-check.sh
 
-**Tính năng**:
+**Muc dich**: Kiem tra health cua tat ca services
 
-- Build Docker images cho frontend và backend
+**Tinh nang**:
+
+- Kiem tra Jenkins
+- Kiem tra Backend API
+- Kiem tra Frontend
+- Hien thi trang thai chi tiet
+
+**Cach su dung**:
+
+```bash
+bash scripts/health-check.sh
+```
+
+---
+
+### 5. build-and-deploy.sh
+
+**Muc dich**: Build va deploy thu cong (khong qua Jenkins)
+
+**Tinh nang**:
+
+- Build Docker images
 - Deploy containers
-- Health checks tự động
-- Rollback khi gặp lỗi
-- Logs chi tiết
+- Health checks tu dong
+- Logs chi tiet
 
-**Cách sử dụng**:
-
-```bash
-./scripts/build-and-deploy.sh [môi-trường]
-
-Môi trường:
-  dev      - Development (Phát triển)
-  staging  - Staging (Kiểm thử)
-  prod     - Production (Sản xuất)
-```
-
-**Ví dụ**:
+**Cach su dung**:
 
 ```bash
-# Deploy lên môi trường development
-./scripts/build-and-deploy.sh dev
+./scripts/build-and-deploy.sh [command]
 
-# Deploy lên staging
-./scripts/build-and-deploy.sh staging
-
-# Deploy lên production (cần xác nhận)
-./scripts/build-and-deploy.sh prod
+Commands:
+  clean      - Xoa build directories
+  install    - Cai dependencies
+  lint       - Chay linters
+  build      - Build applications
+  test       - Chay tests
+  docker     - Build Docker images
+  deploy     - Deploy application
+  all        - Chay tat ca
 ```
 
-## Hướng Dẫn Sử Dụng Nhanh
-
-### Lần Đầu Tiên Sử Dụng
+**Vi du**:
 
 ```bash
-# Bước 1: Cấp quyền thực thi cho các scripts
-chmod +x scripts/*.sh
+# Build tat ca
+./scripts/build-and-deploy.sh all
 
-# Bước 2: Cài đặt Jenkins
-./scripts/setup-jenkins.sh
-
-# Bước 3: Đợi Jenkins khởi động (~2-3 phút)
-# Truy cập: http://localhost:8080
-
-# Bước 4: Lấy mật khẩu admin
-cat jenkins_admin_password.txt
-
-# Bước 5: Đăng nhập Jenkins và hoàn tất cài đặt
+# Chi build
+./scripts/build-and-deploy.sh build
 ```
 
-### Sử Dụng Hàng Ngày
+---
+
+## Huong Dan Cau Hinh Jenkins
+
+### Buoc 1: Setup Lan Dau
 
 ```bash
-# Khởi động Jenkins
-./scripts/manage-jenkins.sh start
+# 1. Chay script setup tu dong
+bash scripts/setup-all.sh
 
-# Kiểm tra trạng thái
-./scripts/manage-jenkins.sh status
+# 2. Doi khoang 2-3 phut de Jenkins khoi dong
+# 3. Lay mat khau admin
+docker exec jenkins_dev cat /var/jenkins_home/secrets/initialAdminPassword
 
-# Deploy ứng dụng
-./scripts/build-and-deploy.sh dev
-
-# Xem logs nếu có lỗi
-./scripts/manage-jenkins.sh logs
+# Hoac tu file
+cat scripts/jenkins_admin_password.txt
 ```
 
-### Backup và Restore
+### Buoc 2: Truy Cap Jenkins
+
+1. Mo trinh duyet: **http://localhost:8081**
+2. Nhap mat khau admin tu buoc 1
+3. Click **Continue**
+
+### Buoc 3: Cai Dat Plugins
+
+1. Chon **Install suggested plugins**
+2. Doi cai dat hoan tat (2-5 phut)
+3. Cac plugins quan trong se tu dong duoc cai:
+   - Git Plugin
+   - Pipeline Plugin
+   - GitHub Plugin
+   - Docker Plugin
+
+### Buoc 4: Tao Admin User
+
+1. Nhap thong tin:
+   - **Username**: `admin` (hoac ten ban muon)
+   - **Password**: (chon password manh)
+   - **Full name**: Ten day du cua ban
+   - **Email**: Email cua ban
+2. Click **Save and Continue**
+3. Click **Save and Finish**
+4. Click **Start using Jenkins**
+
+### Buoc 5: Tao Pipeline Job (QUAN TRONG)
+
+#### 5.1. Tao Job Moi
+
+1. Tu Jenkins Dashboard, click **New Item** (goc trai)
+2. Nhap ten job: `CNPM`
+3. Chon **Pipeline** (KHONG chon Freestyle Project)
+4. Click **OK**
+
+#### 5.2. Cau Hinh General
+
+1. **Description**: `Smart Bus System CI/CD Pipeline`
+2. Tick **GitHub project**
+3. **Project url**: `https://github.com/NasaaaaHii/CNPM/`
+
+#### 5.3. Cau Hinh Build Triggers (Tuy chon)
+
+**Option 1: Poll SCM** (Kiem tra code dinh ky)
+
+- Tick **Poll SCM**
+- **Schedule**: `H/5 * * * *` (kiem tra moi 5 phut)
+
+**Option 2: GitHub Webhook** (Khuyen nghi - build ngay khi push)
+
+- Tick **GitHub hook trigger for GITScm polling**
+- Can cau hinh webhook tren GitHub (xem phan duoi)
+
+#### 5.4. Cau Hinh Pipeline (QUAN TRONG NHAT)
+
+1. **Definition**: Chon **Pipeline script from SCM**
+
+2. **SCM**: Chon **Git**
+
+3. **Repository URL**: `https://github.com/NasaaaaHii/CNPM.git`
+
+4. **Credentials**:
+
+   - Neu public repo: de trong
+   - Neu private repo: Add credentials (GitHub token)
+
+5. **Branches to build**:
+
+   - **Branch Specifier**: `*/main`
+   - Hoac `*/hai` neu muon build branch hai
+   - Hoac `*/*` de build tat ca branches
+
+6. **Script Path**: `jenkinsfile` (chinh xac ten file)
+
+7. Click **Save**
+
+### Buoc 6: Build Lan Dau
+
+#### 6.1. Kiem Tra Prerequisites
 
 ```bash
-# Tạo backup trước khi update
-./scripts/manage-jenkins.sh backup
-
-# Restore nếu cần
-./scripts/manage-jenkins.sh restore
+# Chay script kiem tra
+bash scripts/check-jenkins-build.sh
 ```
 
-## Chi Tiết Về Jenkins Pipeline
+Script se kiem tra:
 
-### Jenkinsfile - 13 Stages Tự Động
+- Jenkins container running
+- Node.js da cai dat (tu dong cai neu thieu)
+- Jenkinsfile hop le
+- Project structure OK
 
-1. **Checkout** - Lấy code từ GitHub
-2. **Environment Info** - Hiển thị thông tin môi trường
-3. **Install Dependencies** - Cài đặt packages
-4. **Code Linting** - Kiểm tra code quality
-5. **Build Frontend** - Build Next.js
-6. **Build Backend** - Build Express.js
-7. **Run Tests** - Chạy unit tests
-8. **Security Scan** - Quét lỗ hổng bảo mật
-9. **Build Docker Images** - Tạo Docker images
-10. **Deploy** - Deploy containers
-11. **Health Check** - Kiểm tra ứng dụng
-12. **Smoke Tests** - Tests cơ bản
-13. **Notify** - Gửi thông báo (email/Slack)
+#### 6.2. Trigger Build
 
-### Trigger Tự Động
+1. Vao job **CNPM**
+2. Click **Build Now** (ben trai)
+3. Build se xuat hien trong **Build History**
+4. Click vao so build (vd: #1)
+5. Click **Console Output** de xem logs
 
-Pipeline tự động chạy khi:
+#### 6.3. Theo Doi Build
 
-- 🔹 Push code lên GitHub
-- 🔹 Tạo Pull Request
-- 🔹 Merge vào branch `main` hoặc `hai`
-- 🔹 Theo lịch (nếu cấu hình)
+Build se chay qua cac stages:
 
-## 🔧 Yêu Cầu Hệ Thống
+1. **Checkout** - Clone code tu GitHub
+2. **Install Dependencies** - npm install backend & frontend
+3. **Code Quality Check** - Lint (co the co warnings)
+4. **Build** - Build backend & frontend
+5. **Test** - Run tests (neu co)
+6. **Security Scan** - npm audit
+7. **Build Docker Images** - (disabled)
+8. **Deploy to Development** - (neu branch = hai)
+9. **Deploy to Staging** - (neu branch = main)
+10. **Smoke Tests** - Health check
 
-### Phần Mềm Cần Thiết
+**Thoi gian mong doi**:
 
-| Phần mềm       | Version | Kiểm tra                 |
-| -------------- | ------- | ------------------------ |
-| Docker         | 20.x+   | `docker -v`              |
-| Docker Compose | 1.29+   | `docker compose version` |
-| Bash           | 4.x+    | `bash --version`         |
-| Git            | 2.x+    | `git --version`          |
+- Lan dau: **5-10 phut** (download dependencies)
+- Lan sau: **2-3 phut** (co cache)
 
-### Port Sử Dụng
+### Buoc 7: Setup GitHub Webhook (Tuy chon)
 
-| Service       | Port  | Mô tả                       |
-| ------------- | ----- | --------------------------- |
-| Jenkins       | 8080  | Jenkins Web UI              |
-| Jenkins Agent | 50000 | Jenkins agent communication |
-| Frontend      | 3000  | Next.js app                 |
-| Backend       | 5000  | Express API                 |
+De build tu dong khi push code:
 
-## Xử Lý Sự Cố
+1. Vao GitHub repo: https://github.com/NasaaaaHii/CNPM
+2. **Settings** -> **Webhooks** -> **Add webhook**
+3. **Payload URL**: `http://<your-ip>:8081/github-webhook/`
+   - Thay `<your-ip>` bang IP public hoac domain
+   - Neu local: can ngrok hoac expose port
+4. **Content type**: `application/json`
+5. **Which events**: Chon **Just the push event**
+6. **Active**
+7. Click **Add webhook**
 
-### Jenkins Không Khởi Động
+---
+
+## Workflow Hang Ngay
+
+### Sang: Khoi Dong Services
 
 ```bash
-# Kiểm tra logs
-docker logs jenkins
+# Option 1: Khoi dong tat ca
+docker compose -f docker-compose.dev.yml up -d
 
-# Xóa container cũ và tạo mới
-docker rm -f jenkins
-./scripts/setup-jenkins.sh
+# Option 2: Dung script
+bash scripts/setup-all.sh
 ```
 
-### Port Đã Được Sử Dụng
+### Lam Viec: Code & Build
 
 ```bash
-# Tìm process sử dụng port 8080
-sudo lsof -i :8080
+# 1. Code trong /backend hoac /frontend
+# 2. Git commit & push
+git add .
+git commit -m "feat: your changes"
+git push origin hai
 
-# Hoặc thay đổi port trong setup-jenkins.sh
-# Sửa dòng: -p 8080:8080 thành -p 8081:8080
+# 3. Jenkins tu dong build (neu co webhook)
+# Hoac click "Build Now" trong Jenkins
 ```
 
-### Build Thất Bại
+### Kiem Tra Loi
 
 ```bash
-# Kiểm tra logs chi tiết
-./scripts/manage-jenkins.sh logs
+# Xem logs Jenkins
+docker logs jenkins_dev -f
 
-# Xem logs từ Jenkins UI
-http://localhost:8080/job/smart-bus-system/
+# Xem logs Backend
+docker compose -f docker-compose.dev.yml logs -f backend
 
-# Chạy build thủ công để debug
-cd frontend && npm run build
-cd backend && npm run build
+# Xem logs Frontend
+docker compose -f docker-compose.dev.yml logs -f frontend
+
+# Health check
+bash scripts/health-check.sh
 ```
 
-### Quên Mật Khẩu Admin
+### Toi: Dung Services (Tuy chon)
 
 ```bash
-# Mật khẩu được lưu trong container
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
-
-# Hoặc trong file
-cat jenkins_admin_password.txt
+docker compose -f docker-compose.dev.yml down
 ```
 
-## Tài Liệu Tham Khảo
+---
+
+## Troubleshooting
+
+### 1. Jenkins: "npm: not found"
+
+**Nguyen nhan**: Node.js chua duoc cai trong Jenkins
+
+**Giai phap**:
+
+```bash
+# Tu dong fix
+bash scripts/check-jenkins-build.sh
+
+# Hoac manual
+docker exec -u root jenkins_dev bash -c "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -"
+docker exec -u root jenkins_dev apt-get install -y nodejs
+```
+
+### 2. Jenkins: "package.json not found"
+
+**Nguyen nhan**: Job config sai (dung Execute Shell thay vi Pipeline)
+
+**Giai phap**:
+
+1. XOA job cu
+2. Tao lai job kieu **Pipeline**
+3. Cau hinh Pipeline script from SCM
+4. Build Now
+
+### 3. Jenkins: "Couldn't find any revision to build"
+
+**Nguyen nhan**: Branch specifier sai (`*/master` thay vi `*/main`)
+
+**Giai phap**:
+
+1. Vao job Config
+2. Sua Branch Specifier thanh `*/main`
+3. Save va Build Now
+
+### 4. Frontend: Permission Denied (.next)
+
+**Nguyen nhan**: Loi quyen thu muc .next
+
+**Giai phap**:
+
+```bash
+rm -rf frontend/.next
+docker compose -f docker-compose.dev.yml restart frontend
+```
+
+### 5. Port Already in Use
+
+**Kiem tra**:
+
+```bash
+sudo lsof -i :8081  # Jenkins
+sudo lsof -i :5000  # Backend
+sudo lsof -i :3000  # Frontend
+```
+
+**Giai phap**: Doi port trong `docker-compose.dev.yml`
+
+---
+
+## Tai Lieu Tham Khao
+
+### Ben Trong Repo
+
+- [../README.md](../README.md) - Huong dan tong quan
+- [../docs/JENKINS_SETUP.md](../docs/JENKINS_SETUP.md) - Chi tiet Jenkins setup
+- [../docs/WINDOWS_SETUP.md](../docs/WINDOWS_SETUP.md) - Huong dan cho Windows
+- [../PRE_COMMIT_CHECKLIST.md](../PRE_COMMIT_CHECKLIST.md) - Checklist truoc commit
+
+### Ben Ngoai
 
 - [Jenkins Documentation](https://www.jenkins.io/doc/)
-- [Docker Documentation](https://docs.docker.com/)
 - [Jenkinsfile Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
-- [GitHub Webhooks](https://docs.github.com/en/webhooks)
+- [Docker Documentation](https://docs.docker.com/)
 
-## Tips và Best Practices
+---
 
-### 1. Backup Thường Xuyên
-
-```bash
-# Tạo backup hàng tuần
-./scripts/manage-jenkins.sh backup
-```
-
-### 2. Giữ Jenkins Luôn Cập Nhật
-
-- Vào Jenkins UI > Manage Jenkins > System Configuration
-- Kiểm tra updates định kỳ
-
-### 3. Monitor Logs
+## Quick Commands
 
 ```bash
-# Theo dõi logs realtime
-./scripts/manage-jenkins.sh logs
+# Setup toan bo
+bash scripts/setup-all.sh
+
+# Kiem tra Jenkins
+bash scripts/check-jenkins-build.sh
+
+# Xem Jenkins logs
+docker logs jenkins_dev -f
+
+# Restart Jenkins
+docker restart jenkins_dev
+
+# Lay admin password
+docker exec jenkins_dev cat /var/jenkins_home/secrets/initialAdminPassword
+
+# Health check
+bash scripts/health-check.sh
+
+# Xem tat ca containers
+docker compose -f docker-compose.dev.yml ps
+
+# Dung tat ca
+docker compose -f docker-compose.dev.yml down
+
+# Restart tat ca
+docker compose -f docker-compose.dev.yml restart
 ```
 
-### 4. Tối Ưu Build Time
+---
 
-- Cache node_modules trong Docker
-- Sử dụng multi-stage builds
-- Parallel execution trong Jenkinsfile
+## Best Practices
+
+### 1. Luon Kiem Tra Truoc Khi Build
+
+```bash
+bash scripts/check-jenkins-build.sh
+```
+
+### 2. Backup Jenkins Dinh Ky
+
+```bash
+# Tao backup
+docker exec jenkins_dev tar -czf /tmp/jenkins-backup.tar.gz /var/jenkins_home
+docker cp jenkins_dev:/tmp/jenkins-backup.tar.gz ./jenkins-backup-$(date +%Y%m%d).tar.gz
+```
+
+### 3. Monitor Logs Thuong Xuyen
+
+```bash
+# Jenkins
+docker logs jenkins_dev -f --tail 100
+
+# All services
+docker compose -f docker-compose.dev.yml logs -f
+```
+
+### 4. Giu Node.js Cap Nhat Trong Jenkins
+
+```bash
+# Kiem tra version
+docker exec jenkins_dev bash -c "node --version && npm --version"
+
+# Update neu can
+docker exec -u root jenkins_dev npm install -g npm@latest
+```
+
+---
+
+## Tips Pro
+
+### Tang Toc Build
+
+1. **Cache dependencies** - Da duoc cau hinh trong docker-compose
+2. **Parallel stages** - Da duoc su dung trong Jenkinsfile
+3. **Incremental builds** - Jenkins tu dong cache
+
+### Debug Khi Build Loi
+
+```bash
+# 1. Xem Jenkins console output
+# 2. Kiem tra logs chi tiet
+docker exec jenkins_dev bash -c "cat /var/jenkins_home/jobs/CNPM/builds/*/log"
+
+# 3. Chay lai stage bi loi manually
+docker exec jenkins_dev bash -c "cd /var/jenkins_home/workspace/CNPM/backend && npm run build"
+```
+
+### Clean Up Dinh Ky
+
+```bash
+# Don dep Docker
+docker system prune -f
+
+# Don build artifacts cu trong Jenkins
+# Manage Jenkins -> Discard Old Builds
+```
+
+---
+
+_Cap nhat lan cuoi: 17/11/2025_  
+_Version: 2.0.0_
+
