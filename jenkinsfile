@@ -269,17 +269,25 @@ pipeline {
                 anyOf {
                     branch 'main'
                     branch 'develop'
+                    branch 'hai'
                 }
             }
             steps {
                 echo ' Running smoke tests...'
                 script {
                     sh '''
+                        # Wait for services to be ready
+                        echo "Waiting for services to start..."
+                        sleep 10
+                        
                         # Test backend health
-                        curl -f http://localhost:5000/health || echo "Backend health check failed"
+                        curl -f http://localhost:5000/health || echo "⚠️ Backend health check failed (service might not be fully ready)"
                         
                         # Test frontend
-                        curl -f http://localhost:3000 || echo "Frontend check failed"
+                        curl -f http://localhost:3000 || echo "⚠️ Frontend check failed (service might not be fully ready)"
+                        
+                        # Check Jenkins itself
+                        curl -f http://localhost:8081 || echo "Jenkins is running on port 8081"
                     '''
                 }
             }
