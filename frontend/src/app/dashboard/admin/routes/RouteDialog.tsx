@@ -15,7 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function RouteDialog({ open, mode, onOpenChange }) {
+interface RouteDialogProps {
+  open: boolean;
+  mode: "add" | "edit" | "read";
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function RouteDialog({ open, mode, onOpenChange }: RouteDialogProps) {
   const isRead = mode === "read";
 
   return (

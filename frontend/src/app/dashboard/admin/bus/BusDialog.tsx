@@ -15,7 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function BusDialog({ open, mode, onOpenChange }) {
+interface BusDialogProps {
+  open: boolean;
+  mode: "add" | "edit" | "read";
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function BusDialog({ open, mode, onOpenChange }: BusDialogProps) {
   const isRead = mode === "read";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

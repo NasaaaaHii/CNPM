@@ -15,7 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function UserDialog({ open, mode, onOpenChange }) {
+interface UserDialogProps {
+  open: boolean;
+  mode: "add" | "edit" | "read";
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function UserDialog({ open, mode, onOpenChange }: UserDialogProps) {
   const isRead = mode === "read";
 
   return (
