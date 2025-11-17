@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Bus,
   UserCheck,
@@ -12,7 +12,10 @@ import {
   MessageCircle,
   Send,
   LogOut,
-  History
+  ClipboardCheck,
+  BusIcon,
+  MapPinHouse,
+  Bell,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,7 +27,7 @@ type Role = "admin" | "driver" | "parent";
 
 export const SideBar = ({ role }: { role: Role }) => {
   const pathname = usePathname();
-  console.log(pathname)
+  console.log(pathname);
   const menu = useMemo(
     () =>
       ({
@@ -35,10 +38,15 @@ export const SideBar = ({ role }: { role: Role }) => {
             icon: <SquareChartGantt />,
           },
           {
+            name: "Bản đồ",
+            path: `/dashboard/admin/realtime-map`,
+            icon: <MapPinHouse />,
+          },
+          {
             name: "Quản lí người dùng",
             path: `/dashboard/admin/users`,
             icon: <User />,
-          }, //driver and parents
+          },
           {
             name: "Quản lí xe Bus",
             path: `/dashboard/admin/bus`,
@@ -55,6 +63,11 @@ export const SideBar = ({ role }: { role: Role }) => {
             icon: <CalendarCheck />,
           },
           {
+            name: "Thông báo",
+            path: `/dashboard/admin/nofitications`,
+            icon: <Bell />,
+          },
+          {
             name: "Thống kê",
             path: `/dashboard/admin/analytics`,
             icon: <ChartNoAxesCombined />,
@@ -67,7 +80,7 @@ export const SideBar = ({ role }: { role: Role }) => {
             icon: <MapPin />,
           },
           {
-            name: "My children",
+            name: "Trạng thái con",
             path: `/dashboard/parent/child-status`,
             icon: <Baby />,
           },
@@ -75,11 +88,6 @@ export const SideBar = ({ role }: { role: Role }) => {
             name: "Thông báo",
             path: `/dashboard/parent/nofitications`,
             icon: <MessageCircle />,
-          },
-          {
-            name: "Lịch sử chuyến đi",
-            path: `/dashboard/parent/trip-history`,
-            icon: <History />,
           },
         ],
         driver: [
@@ -97,6 +105,16 @@ export const SideBar = ({ role }: { role: Role }) => {
             name: "Báo cáo",
             path: `/dashboard/driver/reports`,
             icon: <Send />,
+          },
+          {
+            name: "Kiểm tra học sinh",
+            path: `/dashboard/driver/studentchecklist`,
+            icon: <ClipboardCheck />,
+          },
+          {
+            name: "Kiểm tra xe",
+            path: `/dashboard/driver/checkvehicle`,
+            icon: <BusIcon />,
           },
         ],
       }[role]),

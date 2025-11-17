@@ -26,8 +26,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    env_file:
-      - ./frontend/.env
+    # env_file:
+    #   - ./frontend/.env
     depends_on:
       - backend
     command: npm run dev
