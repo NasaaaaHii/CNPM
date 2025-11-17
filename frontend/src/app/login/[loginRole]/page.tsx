@@ -3,7 +3,7 @@ import React from "react";
 import { UserRole } from "@/types/auth";
 
 interface LoginRolePageProps {
-  params: { loginRole: string }; 
+  params: Promise<{ loginRole: string }>; 
 }
 
 export default async function LoginRolePage({ params }: LoginRolePageProps) {
