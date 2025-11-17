@@ -5,5 +5,5 @@ export default function DriverLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <DashboardLayout role="driver">{children}</DashboardLayout>;
+  return <DashboardLayout>{children}</DashboardLayout>;
 }
