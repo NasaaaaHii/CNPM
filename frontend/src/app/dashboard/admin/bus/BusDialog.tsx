@@ -21,7 +21,11 @@ interface BusDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function BusDialog({ open, mode, onOpenChange }: BusDialogProps) {
+export default function BusDialog({
+  open,
+  mode,
+  onOpenChange,
+}: BusDialogProps) {
   const isRead = mode === "read";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -55,8 +59,7 @@ export default function BusDialog({ open, mode, onOpenChange }: BusDialogProps) 
               <SelectTrigger className="w-full bg-gray-50 border-gray-100 rounded-lg">
                 <SelectValue placeholder="Chọn tài xế" />
               </SelectTrigger>
-              <SelectContent className="rounded-lg border-gray-100 bg-gray-50">
-              </SelectContent>
+              <SelectContent className="rounded-lg border-gray-100 bg-gray-50"></SelectContent>
             </Select>
           </div>
           <div className="flex flex-col gap-2">

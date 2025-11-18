@@ -21,7 +21,11 @@ interface UserDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function UserDialog({ open, mode, onOpenChange }: UserDialogProps) {
+export default function UserDialog({
+  open,
+  mode,
+  onOpenChange,
+}: UserDialogProps) {
   const isRead = mode === "read";
 
   return (
@@ -43,7 +47,11 @@ export default function UserDialog({ open, mode, onOpenChange }: UserDialogProps
 
           <div className="flex flex-col gap-2">
             <Label>Email</Label>
-            <Input name="email" placeholder="abcd@gmail.com" disabled={isRead} />
+            <Input
+              name="email"
+              placeholder="abcd@gmail.com"
+              disabled={isRead}
+            />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -71,13 +79,12 @@ export default function UserDialog({ open, mode, onOpenChange }: UserDialogProps
 
         {!isRead && (
           <div className="flex justify-end mt-4 gap-2">
-            <Button
-              onClick={() => onOpenChange(false)}
-              className="bg-red-500"
-            >
+            <Button onClick={() => onOpenChange(false)} className="bg-red-500">
               Hủy
             </Button>
-            <Button className="bg-green-400">{mode === "add" ? "Thêm" : "Lưu"}</Button>
+            <Button className="bg-green-400">
+              {mode === "add" ? "Thêm" : "Lưu"}
+            </Button>
           </div>
         )}
       </DialogContent>

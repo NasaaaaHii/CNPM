@@ -21,7 +21,11 @@ interface RouteDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function RouteDialog({ open, mode, onOpenChange }: RouteDialogProps) {
+export default function RouteDialog({
+  open,
+  mode,
+  onOpenChange,
+}: RouteDialogProps) {
   const isRead = mode === "read";
 
   return (
@@ -56,9 +60,7 @@ export default function RouteDialog({ open, mode, onOpenChange }: RouteDialogPro
               <SelectTrigger className="w-full bg-gray-50 border-gray-100 rounded-lg">
                 <SelectValue placeholder="Chọn tài xế" />
               </SelectTrigger>
-              <SelectContent className="rounded-lg border-gray-100 bg-gray-50">
-               
-              </SelectContent>
+              <SelectContent className="rounded-lg border-gray-100 bg-gray-50"></SelectContent>
             </Select>
           </div>
 
@@ -68,12 +70,10 @@ export default function RouteDialog({ open, mode, onOpenChange }: RouteDialogPro
               <SelectTrigger className="w-full bg-gray-50 border-gray-100 rounded-lg">
                 <SelectValue placeholder="Chọn loại xe bus" />
               </SelectTrigger>
-              <SelectContent className="rounded-lg border-gray-100 bg-gray-50">
-                
-              </SelectContent>
+              <SelectContent className="rounded-lg border-gray-100 bg-gray-50"></SelectContent>
             </Select>
           </div>
-           <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Label>Status </Label>
             <Select disabled={isRead}>
               <SelectTrigger className="w-full bg-gray-50 border-gray-100 rounded-lg">
