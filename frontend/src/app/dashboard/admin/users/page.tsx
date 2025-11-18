@@ -66,7 +66,10 @@ export default function ManagerUsers() {
     },
   ];
 
-  const [dialog, setDialog] = useState<{ open: boolean; mode: "add" | "edit" | "read" }>({ open: false, mode: "add" });
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    mode: "add" | "edit" | "read";
+  }>({ open: false, mode: "add" });
   const handleOpen = (mode: "add" | "edit" | "read") => {
     setDialog({ open: true, mode });
   };
@@ -167,7 +170,11 @@ export default function ManagerUsers() {
       </div>
 
       {/* Dialog */}
-      <UserDialog open={dialog.open} mode={dialog.mode} onOpenChange={handleClose} />
+      <UserDialog
+        open={dialog.open}
+        mode={dialog.mode}
+        onOpenChange={handleClose}
+      />
     </div>
   );
 }

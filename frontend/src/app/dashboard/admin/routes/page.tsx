@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Route, Trash, PenBoxIcon } from "lucide-react";
@@ -73,7 +73,10 @@ export default function ManagerRoutes() {
       status: true,
     },
   ];
-  const [dialog, setDialog] = useState<{ open: boolean; mode: "add" | "edit" | "read" }>({ open: false, mode: "add" });
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    mode: "add" | "edit" | "read";
+  }>({ open: false, mode: "add" });
   const handleOpen = (mode: "add" | "edit" | "read") => {
     setDialog({ open: true, mode });
   };

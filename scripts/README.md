@@ -568,4 +568,3 @@ docker system prune -f
 
 _Cap nhat lan cuoi: 17/11/2025_  
 _Version: 2.0.0_
-
