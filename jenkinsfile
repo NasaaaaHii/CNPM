@@ -28,18 +28,13 @@ pipeline {
         }
         
         stage('Install Dependencies') {
-            agent {
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
             parallel {
                 stage('Backend Dependencies') {
                     steps {
                         dir('backend') {
                             echo '📦 Installing backend dependencies...'
                             sh '''
+                                which node || echo "Node.js not found"
                                 node --version
                                 npm --version
                                 npm ci || npm install
@@ -52,6 +47,7 @@ pipeline {
                         dir('frontend') {
                             echo '📦 Installing frontend dependencies...'
                             sh '''
+                                which node || echo "Node.js not found"
                                 node --version
                                 npm --version
                                 npm ci || npm install
@@ -63,12 +59,6 @@ pipeline {
         }
         
         stage('Code Quality Check') {
-            agent {
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
             parallel {
                 stage('Lint Backend') {
                     steps {
@@ -90,17 +80,11 @@ pipeline {
         }
         
         stage('Build') {
-            agent {
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
             parallel {
                 stage('Build Backend') {
                     steps {
                         dir('backend') {
-                            echo ' Building backend...'
+                            echo '🏗️ Building backend...'
                             sh 'npm run build'
                             
                             // Verify build output
@@ -111,7 +95,7 @@ pipeline {
                 stage('Build Frontend') {
                     steps {
                         dir('frontend') {
-                            echo ' Building frontend...'
+                            echo '🏗️ Building frontend...'
                             sh 'npm run build'
                             
                             // Verify build output
@@ -123,17 +107,11 @@ pipeline {
         }
         
         stage('Test') {
-            agent {
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
             parallel {
                 stage('Test Backend') {
                     steps {
                         dir('backend') {
-                            echo ' Running backend tests...'
+                            echo '🧪 Running backend tests...'
                             sh '''
                                 if [ -f "package.json" ] && grep -q '"test"' package.json; then
                                     npm test || echo "Tests failed or not configured"
@@ -147,7 +125,7 @@ pipeline {
                 stage('Test Frontend') {
                     steps {
                         dir('frontend') {
-                            echo ' Running frontend tests...'
+                            echo '🧪 Running frontend tests...'
                             sh '''
                                 if [ -f "package.json" ] && grep -q '"test"' package.json; then
                                     npm test || echo "Tests failed or not configured"
@@ -162,14 +140,8 @@ pipeline {
         }
         
         stage('Security Scan') {
-            agent {
-                docker {
-                    image 'node:22-alpine'
-                    reuseNode true
-                }
-            }
             steps {
-                echo ' Running security audit...'
+                echo '🔒 Running security audit...'
                 script {
                     // Backend security scan
                     dir('backend') {
@@ -214,7 +186,7 @@ pipeline {
                 }
             }
             steps {
-                echo ' Deploying to development environment...'
+                echo '🚀 Deploying to development environment...'
                 sh '''
                     docker compose -f docker-compose.dev.yml down || true
                     docker compose -f docker-compose.dev.yml up -d
@@ -233,7 +205,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo ' Deploying to staging environment...'
+                echo '🚀 Deploying to staging environment...'
                 sh '''
                     docker compose -f docker-compose.dev.yml down || true
                     docker compose -f docker-compose.dev.yml up -d
@@ -257,7 +229,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo '  Waiting for production deployment approval...'
+                    echo '⏳ Waiting for production deployment approval...'
                     
                     timeout(time: 30, unit: 'MINUTES') {
                         input message: 'Deploy to Production?', 
@@ -273,7 +245,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo ' Deploying to production environment...'
+                echo '🚀 Deploying to production environment...'
                 script {
                     // Add your production deployment commands here
                     echo 'Production deployment steps would go here'
@@ -295,7 +267,7 @@ pipeline {
                 }
             }
             steps {
-                echo ' Running smoke tests...'
+                echo '🧪 Running smoke tests...'
                 script {
                     sh '''
                         # Wait for services to be ready
