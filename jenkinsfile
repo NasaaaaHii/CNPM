@@ -1,10 +1,6 @@
 pipeline {
     agent any
     
-    tools {
-        nodejs 'NodeJS-22.x'
-    }
-    
     environment {
         // Docker Registry Configuration (disabled for now)
         // DOCKER_REGISTRY = 'docker.io'
@@ -32,6 +28,12 @@ pipeline {
         }
         
         stage('Install Dependencies') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    reuseNode true
+                }
+            }
             parallel {
                 stage('Backend Dependencies') {
                     steps {
@@ -61,6 +63,12 @@ pipeline {
         }
         
         stage('Code Quality Check') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    reuseNode true
+                }
+            }
             parallel {
                 stage('Lint Backend') {
                     steps {
@@ -82,6 +90,12 @@ pipeline {
         }
         
         stage('Build') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    reuseNode true
+                }
+            }
             parallel {
                 stage('Build Backend') {
                     steps {
@@ -109,6 +123,12 @@ pipeline {
         }
         
         stage('Test') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    reuseNode true
+                }
+            }
             parallel {
                 stage('Test Backend') {
                     steps {
@@ -142,6 +162,12 @@ pipeline {
         }
         
         stage('Security Scan') {
+            agent {
+                docker {
+                    image 'node:22-alpine'
+                    reuseNode true
+                }
+            }
             steps {
                 echo ' Running security audit...'
                 script {
