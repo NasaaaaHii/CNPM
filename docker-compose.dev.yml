@@ -3,7 +3,10 @@ version: "3.8"
 services:
   # Jenkins CI/CD Server
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    image: jenkins-nodejs:lts
     container_name: jenkins_dev
     restart: unless-stopped
     privileged: true
