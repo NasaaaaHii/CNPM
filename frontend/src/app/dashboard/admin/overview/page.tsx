@@ -1,11 +1,32 @@
+"use client"
+
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Baby, Bus, Route, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import axiosClient from "@/lib/axiosClient";
+
 
 export default function Overview() {
+  const [overview, setOverview] = useState({
+    total_buses: 0,
+    total_drivers: 0,
+    total_routes: 0,
+    total_students: 0
+  });
+
+  useEffect(() => {
+    axiosClient.get("/api/overview").then((res) => {
+      if(res.data.ok) {
+        setOverview(res.data.data)
+      }
+    }).catch((err) => {
+      console.error("Error overview: ", err)
+    })
+  },[])
   const cardItem = [
     {
       title: "Tổng số xe buýt",
-      value: "28",
+      value: overview.total_buses,
       change: "+2 this month",
       icon: <Bus />,
       color: "text-blue-600",
@@ -13,7 +34,7 @@ export default function Overview() {
     },
     {
       title: "Tổng số tài xế",
-      value: "32",
+      value: overview.total_drivers,
       change: "+4 this month",
       icon: <User />,
       color: "text-green-600",
@@ -21,7 +42,7 @@ export default function Overview() {
     },
     {
       title: "Tuyến đường hoạt động",
-      value: "15",
+      value: overview.total_routes,
       change: "No changes",
       icon: <Route />,
       color: "text-blue-600",
@@ -29,7 +50,7 @@ export default function Overview() {
     },
     {
       title: "Tổng số học sinh",
-      value: "1,247",
+      value: overview.total_students,
       change: "+28 this month",
       icon: <Baby />,
       color: "text-green-600",
