@@ -31,6 +31,10 @@ docker compose -f docker-compose.dev.yml up -d --build jenkins
 
 ## Cau truc project
 
+kiến trúc tổng quan: client - server
+
+backend:  kiến trúc monolith + clean architechture
+-> chia ra theo modular vì có nhiều domain khác nhau như /users, /bus,... -> dễ quản lí
 ```bash
 CNPM/
 ├── frontend/              # Frontend (Next.js + Tailwind + TypeScript)

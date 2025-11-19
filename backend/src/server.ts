@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import supabase from "./config/supabaseClient.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import overviewRoutes from "./modules/overview/overview.route.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ server.use(express.json());
 
 // Routes
 server.use("/api/auth", authRoutes);
+server.use("/api",overviewRoutes)
 
 // Health check endpoint
 server.get("/api/health", (req, res) => {

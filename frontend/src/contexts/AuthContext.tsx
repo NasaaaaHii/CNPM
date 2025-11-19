@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import type { User, UserRole, AuthContextType } from "@/types/auth";
+import axiosClient from "@/lib/axiosClient";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -36,24 +37,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       // Call real API with accountType parameter
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          password,
-          accountType: role, // ✅ FIX: Thêm accountType vào request
-        }),
+      const response = await axiosClient.post("/api/auth/login", {
+        username,
+        password,
+        accountType: role, // ✅ gửi role tới backend
       });
 
-      const data = await response.json();
+      const data = response.data; // axios trả thẳng data
 
-      if (response.ok && data.success) {
+      if (data.ok) {
+        // ✅ axios không có response.ok
         const userData: User = {
-          id: data.data.user.user_id, // ✅ FIX: Sử dụng user_id từ backend
-          email: data.data.user.user_name || "", // ✅ FIX: Backend không có email, dùng user_name
-          name: data.data.user.user_name, // ✅ FIX: Dùng user_name
-          role: data.data.accountType, // ✅ FIX: accountType từ backend
+          id: data.data.user.user_id, // sử dụng user_id từ backend
+          email: data.data.user.user_name || "", // backend không có email, dùng user_name
+          name: data.data.user.user_name,
+          role: data.data.accountType, // accountType từ backend
         };
 
         // Save token and user data
