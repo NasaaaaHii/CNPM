@@ -4,11 +4,11 @@ import {
   getCurrentUser,
   register,
   logout,
-} from "../controllers/auth.controller.js";
+} from "./auth.controller.js";
 import {
   authenticateToken,
   authorizeRoles,
-} from "../middlewares/auth.middleware.js";
+} from "../../core/middlewares/auth.middleware.js";
 
 const router = Router();
 
