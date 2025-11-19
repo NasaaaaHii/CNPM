@@ -3,7 +3,7 @@ import {
   authenticateUser,
   getUserById,
   type LoginRequest,
-} from "../services/auth.service.js";
+} from "./auth.service.js";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-this";
