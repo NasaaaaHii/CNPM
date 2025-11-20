@@ -1,6 +1,4 @@
-import { builtinModules } from "module";
 import supabase from "../../config/supabaseClient.js";
-import e from "express";
 
 type tracking_realtime = {
   bus_id: number;
@@ -15,40 +13,96 @@ async function broadcastPosition(
   longitude: number,
   time: string
 ) {
-  const chanel = supabase.channel(`tracking-bus-${busId}`);
-  await chanel.send({
-    type: "broadcast",
-    event: "position_update",
-    payload: {
-      bus_id: busId,
-      latitude,
-      longitude,
-      time,
-    },
-  });
+  try {
+    const chanel = supabase.channel(`tracking-bus-${busId}`);
+    await chanel.subscribe();
+    await chanel.send({
+      type: "broadcast",
+      event: "position_update",
+      payload: {
+        bus_id: busId,
+        latitude,
+        longitude,
+        time,
+      },
+    });
+  } catch (error) {
+    console.error("Broadcast lỗi:", error);
+  }
+}
+const lastPositions = new Map<
+  number,
+  { lat: number; lng: number; time: Date }
+>();
+/**
+ * Manhattan Distance (nhanh hơn, đủ cho check di chuyển)
+ * Chỉ dùng khi khoảng cách ngắn (< 10km)
+ */
+function calculateManhattanDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  // Chuyển đổi sang km (xấp xỉ)
+  // 1 độ latitude ≈ 111 km
+  // 1 độ longitude ≈ 111 km * cos(latitude)
+  const R = 111; // km per degree (xấp xỉ)
+  const dLat = Math.abs(lat2 - lat1) * R;
+  const dLon =
+    Math.abs(lon2 - lon1) * R * Math.cos((((lat1 + lat2) / 2) * Math.PI) / 180);
+  return dLat + dLon; // Manhattan: |x1-x2| + |y1-y2|
 }
 
 export async function handleTracking(data: tracking_realtime) {
   const now = new Date().toISOString();
   await broadcastPosition(data.bus_id, data.latitude, data.longitude, now);
-  const threeMinuteAgo = new Date();
-  threeMinuteAgo.setMinutes(threeMinuteAgo.getMinutes() - 3);
-  const { data: lastRecord } = await supabase
-    .from("tracking_realtime")
-    .select("timestamp")
-    .eq("bus_id", data.bus_id)
-    .gte("timestamp", threeMinuteAgo.toISOString())
-    .limit(1)
-    .single();
-  if (!lastRecord) {
-    await supabase.from("tracking_realtime").insert([
-      {
-        bus_id: data.bus_id,
-        latitude: data.latitude,
-        longitude: data.longitude,
-        time: now,
-      },
-    ]);
+  const lastPos = lastPositions.get(data.bus_id);
+  let shouldSave = false;
+  if (!lastPos) {
+    shouldSave = true;
+  } else {
+    const dist = calculateManhattanDistance(
+      lastPos.lat,
+      lastPos.lng,
+      data.latitude,
+      data.longitude
+    );
+    if (dist > 0.1) {
+      shouldSave = true;
+    } else {
+      const threeMinuteAgo = new Date();
+      threeMinuteAgo.setMinutes(threeMinuteAgo.getMinutes() - 3);
+      if (new Date(lastPos.time) < threeMinuteAgo) {
+        shouldSave = true;
+      }
+    }
+  }
+  if (shouldSave) {
+    const threeMinuteAgo = new Date();
+    threeMinuteAgo.setMinutes(threeMinuteAgo.getMinutes() - 3);
+    const { data: lastRecord } = await supabase
+      .from("tracking_realtime")
+      .select("timestamp")
+      .eq("bus_id", data.bus_id)
+      .gte("timestamp", threeMinuteAgo.toISOString())
+      .limit(1)
+      .single();
+    if (!lastRecord) {
+      await supabase.from("tracking_realtime").insert([
+        {
+          bus_id: data.bus_id,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          time: now,
+        },
+      ]);
+      lastPositions.set(data.bus_id, {
+        lat: data.latitude,
+        lng: data.longitude,
+        time: new Date(),
+      });
+    }
   }
 }
 
@@ -61,5 +115,23 @@ export async function getCurrrentPosition(busId: number) {
     .limit(1)
     .single();
   if (error) throw new Error(error.message);
-  return data;
+  const latestPositions = new Map();
+  data?.forEach((record: any) => {
+    if (!latestPositions.has(record.bus_id)) {
+      latestPositions.set(record.bus_id, record);
+    }
+  });
+
+  return Array.from(latestPositions.values());
+}
+
+export async function getAllCurrentPos() {
+  const { data, error } = await supabase
+    .from("tracking_realtime")
+    .select("*")
+    .order("timestamp", { ascending: false });
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data || [];
 }
