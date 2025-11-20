@@ -9,15 +9,16 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axiosClient from "@/lib/axiosClient";
 import TrackingTest from "./TrackingTest";
+import { getRouteFromOSRM } from "@/lib/osrm";
 
-// Fix lỗi icon mặc định của Leaflet
+// Fix default icon
 delete (
-  L.Icon.Default.prototype as unknown as {
-    _getIconUrl?: string | (() => string);
-  }
+  L.Icon.Default.prototype as unknown as { _getIconUrl?: string }
 )._getIconUrl;
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
@@ -27,49 +28,106 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
+const SCHOOL: [number, number] = [10.76006, 106.68229];
+
 export default function MapClient() {
-  const school: [number, number] = [10.76006, 106.68229];
-  const home: [number, number] = [10.76102, 106.63001];
-  const routes = useMemo(() => [home, school], [home, school]);
-
-  const [busPos, setBusPos] = useState({ lat: home[0], lng: home[1] });
+  const [route, setRoute] = useState<[number, number][]>([]);
+  const [busPos, setBusPos] = useState({ lat: SCHOOL[0], lng: SCHOOL[1] });
   const stepRef = useRef(0);
-  const directionRef = useRef(1);
-  const totalSteps = 100;
+  const intervalRef = useRef<number | null>(null);
+  const BUS_ID = 2; // hardcode or pass as prop
 
+  // 1. Fetch student pickup points từ backend
   useEffect(() => {
-    const interval = setInterval(() => {
-      stepRef.current += directionRef.current;
-      if (stepRef.current >= totalSteps || stepRef.current <= 0) {
-        directionRef.current *= -1;
+    let mounted = true;
+
+    (async () => {
+      try {
+        // gọi /api/realtime/2/students
+        const res = await axiosClient.get(`/api/realtime/${BUS_ID}/students`);
+        if (!mounted) return;
+
+        const students = res?.data?.data ?? [];
+
+        // extract pickup coordinates từ response
+        const studentPoints: [number, number][] = students
+          .map((s: any) => {
+            const pp = s?.pickup_point;
+            if (!pp) return null;
+            const lat = Number(pp.latitude);
+            const lng = Number(pp.longitude);
+            if (!isFinite(lat) || !isFinite(lng)) return null;
+            return [lat, lng] as [number, number];
+          })
+          .filter(Boolean);
+
+        console.log("Student pickup points:", studentPoints);
+
+        // build waypoints: SCHOOL -> students -> SCHOOL (round trip)
+        const waypoints: [number, number][] = [SCHOOL, ...studentPoints, SCHOOL];
+
+        if (waypoints.length < 2) {
+          console.warn("Not enough waypoints for routing");
+          return;
+        }
+
+        // gọi OSRM via backend proxy
+        const osrmRoute = await getRouteFromOSRM(waypoints);
+        if (!mounted) return;
+
+        if (osrmRoute && osrmRoute.length > 0) {
+          setRoute(osrmRoute);
+          console.log("Route geometry received, points:", osrmRoute.length);
+        }
+      } catch (err) {
+        console.error("Error fetching students or route:", err);
       }
+    })();
 
-      const lat =
-        home[0] + (school[0] - home[0]) * (stepRef.current / totalSteps);
-      const lng =
-        home[1] + (school[1] - home[1]) * (stepRef.current / totalSteps);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
+  // 2. Animate bus dọc theo route
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    if (route.length === 0) return;
+
+    stepRef.current = 0;
+    setBusPos({ lat: route[0][0], lng: route[0][1] });
+
+    intervalRef.current = window.setInterval(() => {
+      stepRef.current = (stepRef.current + 1) % route.length;
+      const [lat, lng] = route[stepRef.current];
       setBusPos({ lat, lng });
-    }, 1000);
+    }, 300); // tốc độ: ms/step
 
-    return () => clearInterval(interval);
-  }, [home, school]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [route]);
 
   return (
     <div className="w-full h-[800px] rounded-2xl overflow-hidden shadow-md">
-      <MapContainer center={school} zoom={14} className="h-full w-full">
+      <MapContainer center={SCHOOL} zoom={14} className="h-full w-full">
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <Marker position={home}>
-          <Popup>My Home</Popup>
+        <Marker position={SCHOOL}>
+          <Popup>School</Popup>
         </Marker>
-        <Marker position={school}>
-          <Popup>SGU</Popup>
-        </Marker>
-        <Polyline positions={routes} color="blue" />
+
+        {route.length > 0 && <Polyline positions={route} color="blue" />}
 
         <TrackingTest data={busPos} />
       </MapContainer>

@@ -58,6 +58,11 @@ export default function Overview() {
     },
   ];
 
+  console.log("bus: ", overview.total_buses)
+  console.log("driver: ", overview.total_drivers)
+  console.log("routes: ", overview.total_routes)
+  console.log("student: ", overview.total_students)
+
   return (
     <div className="flex-1 overflow-y-auto p-8">
       <div className="space-y-6">

@@ -2,11 +2,18 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+
 import supabase from "./config/supabaseClient.js";
+import {startMQTT} from "./modules/mqtt/mqtt.service.js"
 import authRoutes from "./modules/auth/auth.routes.js";
 import overviewRoutes from "./modules/overview/overview.route.js";
 import trackingRoutes from "./modules/tracking/tracking.routes.js";
+import realtimeRoutes from "./modules/realtime/realtime.route.js";
+
+
 dotenv.config();
+
+startMQTT()
 
 const server = express();
 const port: number | string = process.env.PORT || 5000;
@@ -19,6 +26,7 @@ server.use(express.json());
 server.use("/api/auth", authRoutes);
 server.use("/api", overviewRoutes);
 server.use("/api/tracking", trackingRoutes);
+server.use("/api",realtimeRoutes)
 // Health check endpoint
 server.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
