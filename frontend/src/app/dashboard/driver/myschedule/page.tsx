@@ -13,12 +13,12 @@ import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import CheckpointsCard from "./CheckpointsCard";
 export default function ManagerMySchedule() {
-  const routeName = "Route A";
-  const busNumber = "BUS-001";
-  const timeRange = "07:00 AM - 08:30 AM";
-  const totalStops = 8;
-  const totalStudents = 12;
-
+  const [routeName, setRouteName] = useState<string>();
+  const [busNumber, setBusNumber] = useState<string>();
+  const [timeStart, setTimeStart] = useState<string>();
+  const [timeEnd, setTimeEnd] = useState<string>();
+  const [totalStops, setTotalStops] = useState<number>();
+  const [totalStudents, setTotalStudents] = useState<number>(0);
   const dataStudents = [
     {
       id: 1,
@@ -83,7 +83,9 @@ export default function ManagerMySchedule() {
               </div>
               <div className="flex flex-col">
                 <p className="font-normal text-lg text-gray-700">Time</p>
-                <p className="font-normal text-xl">{timeRange}</p>
+                <p className="font-normal text-xl">
+                  {timeStart} - {timeEnd}
+                </p>
               </div>
               <div className="flex flex-col">
                 <p className="font-normal text-lg text-gray-700">Students</p>
@@ -180,6 +182,7 @@ export default function ManagerMySchedule() {
           </div>
           <div className="shadow-lg rounded-xl border border-gray-300 p-8 flex flex-col gap-4">
             <p className="text-xl font-medium">Route Map</p>
+            <MapClient />
           </div>
         </div>
       </div>

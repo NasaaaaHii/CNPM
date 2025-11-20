@@ -36,35 +36,88 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
 
     try {
-      // Call real API with accountType parameter
+      console.log("🔐 LOGIN ATTEMPT:", { username, role });
+
       const response = await axiosClient.post("/api/auth/login", {
         username,
         password,
-        accountType: role, // ✅ gửi role tới backend
+        accountType: role,
       });
 
-      const data = response.data; // axios trả thẳng data
+      console.log("📥 RAW RESPONSE:", response);
+      console.log("📥 RESPONSE DATA:", response.data);
 
-      if (data.ok) {
-        // ✅ axios không có response.ok
-        const userData: User = {
-          id: data.data.user.user_id, // sử dụng user_id từ backend
-          email: data.data.user.user_name || "", // backend không có email, dùng user_name
-          name: data.data.user.user_name,
-          role: data.data.accountType, // accountType từ backend
-        };
+      const data = response.data;
 
-        // Save token and user data
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("authToken", data.data.token);
+      // ✅ Kiểm tra nhiều format response
+      const isSuccess =
+        data.ok === true || data.success === true || response.status === 200;
 
-        setUser(userData);
-        return true;
+      if (!isSuccess) {
+        console.error("❌ Login failed - server returned:", data);
+        return false;
       }
 
-      return false;
-    } catch (error) {
-      console.error("Login failed:", error);
+      // ✅ Flexible data extraction
+      let userId, userName, token, accountType;
+
+      // Try different response structures
+      if (data.data) {
+        // Structure: { data: { user: {...}, token: "..." } }
+        userId = data.data.user?.user_id || data.data.user?.id;
+        userName = data.data.user?.user_name || data.data.user?.username;
+        token = data.data.token;
+        accountType = data.data.accountType || data.data.user?.accountType;
+      } else {
+        // Structure: { user: {...}, token: "..." }
+        userId = data.user?.user_id || data.user?.id;
+        userName = data.user?.user_name || data.user?.username;
+        token = data.token;
+        accountType = data.accountType || data.user?.accountType;
+      }
+
+      console.log("📝 EXTRACTED DATA:", {
+        userId,
+        userName,
+        token,
+        accountType,
+      });
+
+      // ✅ Validate essential fields
+      if (!userId || !userName || !token) {
+        console.error("❌ Missing essential data:", {
+          userId,
+          userName,
+          token,
+        });
+        return false;
+      }
+
+      const userData: User = {
+        id: userId,
+        email: userName,
+        name: userName,
+        role: accountType || role,
+      };
+
+      // Save to localStorage
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("authToken", token);
+
+      setUser(userData);
+      console.log("✅ LOGIN SUCCESS:", userData);
+      return true;
+    } catch (error: any) {
+      console.error("❌ LOGIN EXCEPTION:", error);
+
+      if (error.response?.status === 401) {
+        console.error("Invalid credentials or unauthorized");
+      } else if (error.response) {
+        console.error("Server error:", error.response.data);
+      } else if (error.request) {
+        console.error("No response - backend might be down");
+      }
+
       return false;
     } finally {
       setLoading(false);
