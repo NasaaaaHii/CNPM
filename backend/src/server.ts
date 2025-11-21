@@ -6,6 +6,8 @@ import supabase from "./config/supabaseClient.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import overviewRoutes from "./modules/overview/overview.route.js";
 import trackingRoutes from "./modules/tracking/tracking.routes.js";
+import MessageRoute from "./modules/message/message.router.js";
+import StudentsRoute from "./modules/students/students.router.js";
 dotenv.config();
 
 const server = express();
@@ -19,6 +21,8 @@ server.use(express.json());
 server.use("/api/auth", authRoutes);
 server.use("/api", overviewRoutes);
 server.use("/api/tracking", trackingRoutes);
+server.use("/api", MessageRoute);
+server.use("/api", StudentsRoute);
 // Health check endpoint
 server.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
