@@ -138,9 +138,9 @@ export default function ManagerUsers() {
                     <TableCell>
                       <Badge
                         variant={"secondary"}
-                        className={getConvertedStatus(user.account_staus) ? "bg-green-400" : "bg-gray-400"}
+                        className={getConvertedStatus(user.account_status) ? "bg-green-400" : "bg-gray-400"}
                       >
-                        {getConvertedStatus(user.account_staus) ? "Active" : "Inactive"}
+                        {getConvertedStatus(user.account_status) ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell className="flex gap-2">
@@ -171,6 +171,7 @@ export default function ManagerUsers() {
         open={dialog.open}
         mode={dialog.mode}
         onOpenChange={handleClose}
+        onSuccess={fetchUsers}
       />
     </div>
   );
