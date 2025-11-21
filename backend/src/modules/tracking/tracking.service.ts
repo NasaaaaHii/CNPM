@@ -135,3 +135,19 @@ export async function getAllCurrentPos() {
   }
   return data || [];
 }
+
+export async function getStudentWithPosition(busId: number) {
+  const { data, error } = await supabase
+    .from("students")
+    .select(`*, pickup_point:pickup_point_id(latitude,longitude)`)
+    .eq("bus_id", busId);
+
+  if (error) {
+    console.error("get student error: ", error);
+    return [];
+  }
+
+  console.log("danh sach student co pickup point: ", data);
+
+  return data || [];
+}
