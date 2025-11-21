@@ -14,45 +14,16 @@ import { Trash, UserRoundPen, User, Bus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { busService } from "@/service/bus.service";
+import BusDialog from "./BusDialog";
 export default function ManagerBus() {
-  // const buses = [
-  //   {
-  //     id: 1,
-  //     type: "BUS XL",
-  //     numberOfSeats: 50,
-  //     driver: "Nguyễn Văn A",
-  //     status: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     type: "BUS L",
-  //     numberOfSeats: 30,
-  //     driver: "Nguyễn Văn B",
-  //     status: true,
-  //   },
-  //   {
-  //     id: 3,
-  //     type: "BUS M",
-  //     numberOfSeats: 20,
-  //     driver: "Nguyễn Văn C",
-  //     status: false,
-  //   },
-  //   {
-  //     id: 4,
-  //     type: "BUS XL",
-  //     numberOfSeats: 50,
-  //     driver: "Nguyễn Văn D",
-  //     status: false,
-  //   },
-  //   {
-  //     id: 5,
-  //     type: "BUS XXL",
-  //     numberOfSeats: 75,
-  //     driver: "Nguyễn Văn E",
-  //     status: true,
-  //   },
-  // ];
   const [buses, setBuses] = useState<any[]>([]);
+  const [dialog, setDialog] = useState<{ open: boolean; mode: "add" | "edit" | "read" }>({ open: false, mode: "add" });
+  const handleOpen = (mode: "add" | "edit" | "read") => {
+    setDialog({ open: true, mode });
+  };
+  const handleClose = (open: boolean) => {
+    setDialog((prev) => ({ ...prev, open }));
+  };
   const fetchBuses = async () => {
     try {
       const response = await busService.getBuses();
@@ -76,6 +47,7 @@ export default function ManagerBus() {
               <Button
                 variant={"secondary"}
                 className="bg-blue-500 hover:bg-blue-700 hover:text-white"
+                onClick={() => handleOpen("add")}
               >
                 <Bus />
                 Add new Bus
@@ -138,6 +110,7 @@ export default function ManagerBus() {
           </CardContent>
         </Card>
       </div>
+      <BusDialog open={dialog.open} mode={dialog.mode} onOpenChange={handleClose} />
     </div>
   );
 }
