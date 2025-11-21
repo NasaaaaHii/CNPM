@@ -1,6 +1,5 @@
-import { scheduler } from "node:timers/promises";
 import supabase from "../../config/supabaseClient.js";
-import { builtinModules } from "node:module";
+
 // lấy danh sách driver (để admin chọn)
 export async function getAllDrivers() {
   const { data: driver, error: driver_error } = await supabase
@@ -16,7 +15,7 @@ export async function getAllDrivers() {
   return driver;
 }
 
-// Lấy danh sách buses (để admin chọn)
+// Lấy danh sách routes (để admin chọn)
 export async function getAllRoutes() {
   const { data: routes, error: router_error } = await supabase
     .from("routes")
@@ -31,27 +30,57 @@ export async function getAllRoutes() {
   return routes;
 }
 
+// Lấy danh sách buses (để admin chọn)
+export async function getAllBuses() {
+  const { data: bus, error: bus_error } = await supabase
+    .from("bus")
+    .select("*")
+    .order("bus_id", { ascending: false });
+  if (bus_error) {
+    throw new Error("Lỗi Bus" + bus_error);
+  }
+  if (!bus) {
+    return [];
+  }
+  return bus;
+}
+
 //Tạo schedule mới
+function normalizeTime(timeStr: string): string {
+  if (!timeStr) return timeStr;
+  if (timeStr.split(":").length === 3) {
+    return timeStr;
+  }
+  if (timeStr.split(":").length === 2) {
+    return `${timeStr}:00`;
+  }
+  return timeStr;
+}
 export async function createSchedule(data: {
   bus_id: number;
   driver_id: number;
   route_id: number;
   schedule_date: string;
+  start_time: string;
 }) {
   if (
     !data.bus_id ||
     !data.driver_id ||
     !data.route_id ||
-    !data.schedule_date
+    !data.schedule_date ||
+    !data.start_time
   ) {
     throw new Error("Thiếu dữ liệu trong create");
   }
+  const normalizedTime = normalizeTime(data.start_time);
   const { data: exits } = await supabase
     .from("schedule")
     .select("*")
     .eq("driver_id", data.driver_id)
     .eq("route_id", data.route_id)
     .eq("schedule_date", data.schedule_date)
+    .eq("bus_id", data.bus_id)
+    .eq("start_time", normalizedTime)
     .single();
   if (exits) {
     throw new Error("Đã tồn tại dữ liệu này");
@@ -62,14 +91,17 @@ export async function createSchedule(data: {
       {
         driver_id: data.driver_id,
         bus_id: data.bus_id,
-        scheduler_date: data.schedule_date,
+        schedule_date: data.schedule_date,
         route_id: data.route_id,
+        start_time: normalizedTime,
       },
     ])
     .select()
     .single();
   if (newSchedule_error) {
-    throw new Error("Lỗi không thể insert new Schedule vào bảng");
+    throw new Error(
+      "Lỗi không thể insert new Schedule vào bảng " + newSchedule_error.message
+    );
   }
   if (!newSchedule) {
     return [];
@@ -89,6 +121,32 @@ function formatTime(timestamp: string): string {
     return "N/A";
   }
 }
+
+async function calculateStatus(
+  busId: number,
+  scheduleDate: string
+): Promise<"scheduled" | "in_progress" | "completed"> {
+  const three = new Date();
+  three.setMinutes(three.getMinutes() - 3);
+  const { data } = await supabase
+    .from("tracking_realtime")
+    .select("timestamp")
+    .eq("bus_id", busId)
+    .gte("timestamp", three.toISOString())
+    .limit(1)
+    .single();
+  if (data) {
+    return "in_progress";
+  }
+  const scheduleDateObj = new Date(scheduleDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (scheduleDateObj < today) {
+    return "completed";
+  }
+  return "scheduled";
+}
+// lấy thông tin tất cả lịch trình
 export async function getAllSchedule(filter?: {
   date: string;
   driver_id: number;
@@ -141,23 +199,112 @@ export async function getAllSchedule(filter?: {
         .gte("timestamp", `${schedule.schedule_date}T00:00:00`)
         .order("timestamp", { ascending: true })
         .limit(1);
-      const firstTracking = trackingData?.[0];
       return {
         schedule_key: `${schedule.driver_id}-${schedule.bus_id}-${schedule.route_id}-${schedule.schedule_date}`,
         driver_id: schedule.driver_id,
-        driver_name: schedule.account?.user_name || "Unknown",
         bus_id: schedule.bus_id,
-        bus_number: schedule.bus?.license_plate_number || "Unknown",
+        bus_number: schedule.bus?.license_plate_number,
         route_id: schedule.route_id,
-        route_name: schedule.routes?.route_name || "Unknown",
         schedule_date: schedule.schedule_date,
-        time: firstTracking?.timestamp
-          ? formatTime(firstTracking.timestamp)
-          : "N/A",
+        time: formatTime(schedule.start_time),
         status: status,
         is_active: status === "in_progress",
       };
     })
   );
   return scheduleWithStatus;
+}
+
+// Xóa schedule
+export async function deleteSchedule(
+  driverId: number,
+  busId: number,
+  routeId: number,
+  scheduleDate: string,
+  startTime: string
+) {
+  const normalizedTime = normalizeTime(startTime);
+  const { error } = await supabase
+    .from("schedule")
+    .delete()
+    .eq("driver_id", driverId)
+    .eq("bus_id", busId)
+    .eq("route_id", routeId)
+    .eq("schedule_date", scheduleDate)
+    .eq("start_time", normalizedTime);
+  if (error) {
+    throw new Error("Lỗi xóa lịch trình: " + error.message);
+  }
+  return { success: true };
+}
+
+// Cập nhật lịch trình
+//todo cần phải xử lí làm sao để cho thời gian mới không được < thời gian đi + thời gian đến khi đang ở trong lịch trình
+export async function updateSchedule(
+  old_data: {
+    bus_id: number;
+    driver_id: number;
+    route_id: number;
+    schedule_date: string;
+    start_time: string;
+  },
+  new_data: {
+    driver_id?: number;
+    bus_id?: number;
+    route_id?: number;
+    schedule_date?: string;
+    start_time?: string;
+  }
+) {
+  const normalizedOldTime = normalizeTime(old_data.start_time);
+  const normalizedNewTime = new_data.start_time
+    ? normalizeTime(new_data.start_time)
+    : normalizedOldTime;
+
+  const finalDriverId = new_data.driver_id ?? old_data.driver_id;
+  const finalBusId = new_data.bus_id ?? old_data.bus_id;
+  const finalRouteId = new_data.route_id ?? old_data.route_id;
+  const finalScheduleDate = new_data.schedule_date ?? old_data.schedule_date;
+  const finalStartTime = normalizedNewTime;
+
+  const isSameKey =
+    finalDriverId === old_data.driver_id &&
+    finalBusId === old_data.bus_id &&
+    finalRouteId === old_data.route_id &&
+    finalScheduleDate === old_data.schedule_date &&
+    finalStartTime === normalizedOldTime;
+
+  if (isSameKey) {
+    return { message: "Không có thay đổi nào" };
+  }
+
+  const { data: existing } = await supabase
+    .from("schedule")
+    .select("*")
+    .eq("driver_id", finalDriverId)
+    .eq("bus_id", finalBusId)
+    .eq("route_id", finalRouteId)
+    .eq("schedule_date", finalScheduleDate)
+    .eq("start_time", finalStartTime)
+    .single();
+
+  if (existing) {
+    throw new Error("Lịch trình đã tồn tại");
+  }
+
+  await deleteSchedule(
+    old_data.driver_id,
+    old_data.bus_id,
+    old_data.route_id,
+    old_data.schedule_date,
+    old_data.start_time
+  );
+
+  return await createSchedule({
+    driver_id: finalDriverId,
+    bus_id: finalBusId,
+    route_id: finalRouteId,
+    schedule_date: finalScheduleDate,
+    start_time: finalStartTime,
+  });
 }

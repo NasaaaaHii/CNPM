@@ -11,6 +11,7 @@ import trackingRoutes from "./modules/tracking/tracking.routes.js";
 import realtimeRoutes from "./modules/realtime/realtime.route.js";
 
 
+import scheduleRoutes from "./modules/schedule/schedule.routes.js";
 dotenv.config();
 
 startMQTT()
@@ -27,6 +28,7 @@ server.use("/api/auth", authRoutes);
 server.use("/api", overviewRoutes);
 server.use("/api/tracking", trackingRoutes);
 server.use("/api",realtimeRoutes)
+server.use("/api/schedule", scheduleRoutes);
 // Health check endpoint
 server.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Server is running" });
