@@ -48,12 +48,6 @@ export default function ManagerUsers() {
     return status == "active" ? "Active" : "Inactive";
   }
 
-  const getConvertedRole = (role: string) => {
-    if (role === "driver") return "Tài xế";
-    if (role === "parent") return "Phụ huynh";
-    return "Admin";
-  }
-
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -139,14 +133,14 @@ export default function ManagerUsers() {
                 {filteredUsers.map((user) => (
                   <TableRow key={user.user_id}>
                     <TableCell>{user.name}</TableCell>
-                    <TableCell>{getConvertedRole(user.type_user_name)}</TableCell>
+                    <TableCell>{user.type_user_name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
                       <Badge
                         variant={"secondary"}
                         className={getConvertedStatus(user.account_staus) ? "bg-green-400" : "bg-gray-400"}
                       >
-                        {getConvertedStatus(user.account_staus)}
+                        {getConvertedStatus(user.account_staus) ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell className="flex gap-2">
