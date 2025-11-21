@@ -10,9 +10,14 @@ export class MessageApi {
     };
     
     static async sendMessageToAdminByIdParent(idParent: number, message: string){
-        await axiosClient.post("/api/message/send", {
-            idParentt: idParent,
-            message: message
-        });
+        try {
+            const res = await axiosClient.post("/api/message/send/parent", {
+                idParent: idParent,
+                message: message
+            });
+            return res.data;
+        } catch (error: any) {
+            if(error.response && !error.response.ok) throw new Error(error.response.data.error)
+        }
     }
 }

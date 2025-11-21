@@ -40,12 +40,7 @@ export default function Nofitications() {
   const [userParent, setUserParent] = useState<User>();
   const [posMessage, setPosMessage] = useState<number>(0);
   const [messageContent, setMessageContent] = useState<string>("");
-
-  async function sendMessageToAdminByIdParent() {
-    if(!userParent) return;
-    const data = await MessageApi.sendMessageToAdminByIdParent(userParent.id, messageContent)
-    console.log(data)
-  }
+  const [DBMessage, setDBMessage] = useState<Messages>();
 
   useEffect(() => {
     const storedUser: string | null = localStorage.getItem("user");
@@ -54,7 +49,7 @@ export default function Nofitications() {
   }, []);
 
   const {
-    data: DBMessage,
+    data: MessageDataLoad,
     error,
     isLoading,
     refetch,
@@ -75,9 +70,22 @@ export default function Nofitications() {
     enabled: !!userParent,
   });
 
+  async function sendMessageToAdminByIdParent() {
+    if(!userParent) return;
+    try {
+      const data = await MessageApi.sendMessageToAdminByIdParent(userParent.id, messageContent)
+      if(!DBMessage) return
+      const newData = [data.data[0], ...DBMessage]
+      setDBMessage(newData)
+      setMessageContent("")
+    } catch (error: any) {
+      alert("Error: " + error.message)
+    }
+  }
+
   useEffect(() => {
-    console.log(DBMessage);
-  }, [DBMessage]);
+    setDBMessage(MessageDataLoad)
+  }, [MessageDataLoad]);
 
   if (isLoading) return <p className="text-lg text-gray-500">Đang tải...</p>;
   if (error)

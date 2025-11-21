@@ -19,14 +19,15 @@ export const MessageService = {
       if (error) {
         return {
           success: false,
-          message: error,
+          message: error.message,
         };
       }
       return data;
     } catch (error) {
+      const err = error as Error
       return {
         success: false,
-        message: error,
+        message: err.message,
       };
     }
   },
@@ -41,7 +42,15 @@ export const MessageService = {
         receiver_id: 1,
         message_content: message
       }
-      const {data, error} = await supabase.from("message").insert(newData).select()
+      const {data, error} = await supabase.from("message").insert(newData).select(
+                  `
+        message_id,
+        message_content,
+        send_time,
+        sender_id(type_user!type_user_id(type_user_id, type_user_name), account!user_id(user_id, user_name)),
+        receiver_id(type_user!type_user_id(type_user_id, type_user_name), account!user_id(user_id, user_name))
+        `
+      )
       if(error) return { success: false, message: error };
       return data
     } catch (error) {
