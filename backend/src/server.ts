@@ -13,6 +13,7 @@ import StudentsRoute from "./modules/students/students.router.js";
 import nofiticationRoute from "./modules/nofications/nofitications.route.js";
 
 
+import scheduleRoutes from "./modules/schedule/schedule.routes.js";
 dotenv.config();
 
 startMQTT();
@@ -38,6 +39,7 @@ server.use("/api/tracking", trackingRoutes);
 server.use("/api/admin/overview",overviewRoutes);
 server.use("/api/admin/realtime" ,realtimeRoutes);
 server.use("/api/admin/nofitications",nofiticationRoute);
+server.use("/api/schedule", scheduleRoutes);
 
 // ------------------- DRIVER ROUTE --------------------------
 server.use("/api", StudentsRoute);
