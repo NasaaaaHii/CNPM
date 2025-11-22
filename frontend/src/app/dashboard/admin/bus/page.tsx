@@ -37,7 +37,6 @@ export default function ManagerBus() {
     fetchBuses();
   }, []);
 
-  console.log(buses);
   return (
     <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
       <div className="space-y-6">
@@ -61,6 +60,7 @@ export default function ManagerBus() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Mã Bus</TableHead>
+                  <TableHead>Biển số</TableHead>
                   <TableHead>Số lượng ghế</TableHead>
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Hoạt động</TableHead>
@@ -70,6 +70,7 @@ export default function ManagerBus() {
                 {buses.map((bus) => (
                   <TableRow key={bus.bus_id}>
                     <TableCell>{bus.bus_id}</TableCell>
+                    <TableCell>{bus.license_plate_number}</TableCell>
                     <TableCell className="text-left">
                       {bus.number_of_seats}
                     </TableCell>
@@ -107,7 +108,7 @@ export default function ManagerBus() {
           </CardContent>
         </Card>
       </div>
-      <BusDialog open={dialog.open} mode={dialog.mode} onOpenChange={handleClose} />
+      <BusDialog open={dialog.open} mode={dialog.mode} onOpenChange={handleClose} onSuccess={fetchBuses}/>
     </div>
   );
 }

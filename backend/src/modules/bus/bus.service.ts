@@ -26,12 +26,13 @@ export const updateBus = async (bus_id : number, updateData: Partial<{ license_p
     return data;
 }   
 
-export const addBus = async (busData: Partial<{license_plate_number : string, number_of_seat: number}>) => {
+export const addBus = async (busData: Partial<{license_plate_number : string, number_of_seats: number, status: string}>) => {
     const {data, error} = await supabase
         .from('bus')
         .insert([{
             license_plate_number: busData.license_plate_number,
-            number_of_seats: busData.number_of_seat
+            number_of_seats: busData.number_of_seats,
+            status: busData.status
         }]).select().single();
     if (error) {
         throw new Error(`Error adding bus: ${error.message}`);

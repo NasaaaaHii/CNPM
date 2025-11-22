@@ -14,9 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { useState, useEffect } from "react";
 import RouteDialog from "./RouteDialog";
-import { routeService } from "@/service/route.service";
 import { routeService } from "@/service/route.service";
 
 export default function ManagerRoutes() {
