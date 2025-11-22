@@ -2,21 +2,10 @@ import supabase from "../../config/supabaseClient.js";
 
 export const getAllBus = async () => {
     const { data: buses, error: busesError } = await supabase
-        .from('schedule')
+        .from('bus')
         .select(`
-            *, 
-            bus (
-                bus_id,
-                license_plate_number,
-                number_of_seats,
-                status
-            ),
-            user (
-                user_id,
-                name,
-                phone_number
-            )
-        `);
+            *
+            `);
     if (busesError) {
         throw new Error(`Error fetching bus: ${busesError.message}`);
     }

@@ -66,6 +66,7 @@ export default function ManagerBus() {
     fetchBuses();
   }, []);
 
+  console.log(buses);
   return (
     <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
       <div className="space-y-6">
@@ -88,33 +89,29 @@ export default function ManagerBus() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Mã Bus</TableHead>
-                  <TableHead>Loại</TableHead>
                   <TableHead>Số lượng ghế</TableHead>
-                  <TableHead>Tài xế</TableHead>
                   <TableHead>Trạng thái</TableHead>
                   <TableHead>Hoạt động</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {buses.map((bus) => (
-                  <TableRow key={bus.bus.bus_id}>
-                    <TableCell>{bus.bus.bus_id}</TableCell>
-                    <TableCell>None</TableCell>
+                  <TableRow key={bus.bus_id}>
+                    <TableCell>{bus.bus_id}</TableCell>
                     <TableCell className="text-left">
-                      {bus.bus.number_of_seats}
+                      {bus.number_of_seats}
                     </TableCell>
-                    <TableCell>{bus.user.name}</TableCell>
                     <TableCell>
                       <Badge
                         variant={"secondary"}
                         className={cn(
                           "text-white cursor-pointer",
-                          bus.bus.status
+                          bus.status
                             ? "bg-green-500 hover:bg-green-400"
                             : "bg-gray-500 hover:bg-gray-400"
                         )}
                       >
-                        {bus.bus.status ? "Active" : "Inactive"}
+                        {bus.status ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell className="flex gap-2">
