@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,44 +12,31 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Trash, UserRoundPen, User, Bus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { busService } from "@/service/bus.service";
+import BusDialog from "./BusDialog";
 export default function ManagerBus() {
-  const buses = [
-    {
-      id: 1,
-      type: "BUS XL",
-      numberOfSeats: 50,
-      driver: "Nguyễn Văn A",
-      status: true,
-    },
-    {
-      id: 2,
-      type: "BUS L",
-      numberOfSeats: 30,
-      driver: "Nguyễn Văn B",
-      status: true,
-    },
-    {
-      id: 3,
-      type: "BUS M",
-      numberOfSeats: 20,
-      driver: "Nguyễn Văn C",
-      status: false,
-    },
-    {
-      id: 4,
-      type: "BUS XL",
-      numberOfSeats: 50,
-      driver: "Nguyễn Văn D",
-      status: false,
-    },
-    {
-      id: 5,
-      type: "BUS XXL",
-      numberOfSeats: 75,
-      driver: "Nguyễn Văn E",
-      status: true,
-    },
-  ];
+  const [buses, setBuses] = useState<any[]>([]);
+  const [dialog, setDialog] = useState<{ open: boolean; mode: "add" | "edit" | "read" }>({ open: false, mode: "add" });
+  const handleOpen = (mode: "add" | "edit" | "read") => {
+    setDialog({ open: true, mode });
+  };
+  const handleClose = (open: boolean) => {
+    setDialog((prev) => ({ ...prev, open }));
+  };
+  const fetchBuses = async () => {
+    try {
+      const response = await busService.getBuses();
+      setBuses(response);
+    } catch (error) {
+      console.error("Failed to fetch buses:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBuses();
+  }, []);
+
   return (
     <div className="flex-1 p-8 overflow-y-auto bg-gray-50">
       <div className="space-y-6">
@@ -59,6 +47,7 @@ export default function ManagerBus() {
               <Button
                 variant={"secondary"}
                 className="bg-blue-500 hover:bg-blue-700 hover:text-white"
+                onClick={() => handleOpen("add")}
               >
                 <Bus />
                 Add new Bus
@@ -80,24 +69,24 @@ export default function ManagerBus() {
               </TableHeader>
               <TableBody>
                 {buses.map((bus) => (
-                  <TableRow key={bus.id}>
-                    <TableCell>{bus.id}</TableCell>
-                    <TableCell>{bus.type}</TableCell>
+                  <TableRow key={bus.bus.bus_id}>
+                    <TableCell>{bus.bus.bus_id}</TableCell>
+                    <TableCell>None</TableCell>
                     <TableCell className="text-left">
-                      {bus.numberOfSeats}
+                      {bus.bus.number_of_seats}
                     </TableCell>
-                    <TableCell>{bus.driver}</TableCell>
+                    <TableCell>{bus.user.name}</TableCell>
                     <TableCell>
                       <Badge
                         variant={"secondary"}
                         className={cn(
                           "text-white cursor-pointer",
-                          bus.status
+                          bus.bus.status
                             ? "bg-green-500 hover:bg-green-400"
                             : "bg-gray-500 hover:bg-gray-400"
                         )}
                       >
-                        {bus.status ? "Active" : "Inactive"}
+                        {bus.bus.status ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell className="flex gap-2">
@@ -121,6 +110,7 @@ export default function ManagerBus() {
           </CardContent>
         </Card>
       </div>
+      <BusDialog open={dialog.open} mode={dialog.mode} onOpenChange={handleClose} />
     </div>
   );
 }
