@@ -458,6 +458,10 @@ JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=24h
 ```
 
+```
+HiveMQ cloud= https://console.hivemq.cloud/clusters/b8c1293f22204f0e896ddf9c00cf9c93
+```
+
 ## 👨‍💻 Development
 
 ```bash
