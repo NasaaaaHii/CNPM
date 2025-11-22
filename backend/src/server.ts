@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import supabase from "./config/supabaseClient.js";
-import { startMQTT } from "./modules/mqtt/mqtt.service.js";
+// import { startMQTT } from "./modules/mqtt/mqtt.service.js";
 
 
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -20,7 +20,7 @@ import routeRoutes from "./modules/routes/route.routes.js"
 
 dotenv.config();
 
-startMQTT();
+// startMQTT();
 
 const server = express();
 const port: number | string = process.env.PORT || 5000;
