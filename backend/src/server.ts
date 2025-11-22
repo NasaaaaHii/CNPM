@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 
 import supabase from "./config/supabaseClient.js";
 import { startMQTT } from "./modules/mqtt/mqtt.service.js";
+
+
 import authRoutes from "./modules/auth/auth.routes.js";
 import overviewRoutes from "./modules/overview/overview.route.js";
 import trackingRoutes from "./modules/tracking/tracking.routes.js";
@@ -11,9 +13,9 @@ import realtimeRoutes from "./modules/realtime/realtime.route.js";
 import MessageRoute from "./modules/message/message.router.js";
 import StudentsRoute from "./modules/students/students.router.js";
 import nofiticationRoute from "./modules/nofications/nofitications.route.js";
-
-
 import scheduleRoutes from "./modules/schedule/schedule.routes.js";
+
+
 dotenv.config();
 
 startMQTT();
