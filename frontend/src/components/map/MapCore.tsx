@@ -45,6 +45,7 @@ export default function MapCore({ school, home, busPos }: MapCoreProps) {
       <Marker position={school}>
         <Popup>SGU</Popup>
       </Marker>
+      {/* route tu home -> sgu */}
       <Polyline positions={routes} color="blue" />
       <Marker position={busPosition}>
         <Popup>Bus Position</Popup>

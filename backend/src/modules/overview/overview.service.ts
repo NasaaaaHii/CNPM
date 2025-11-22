@@ -16,7 +16,7 @@ async function overviewService() {
     return {
       total_buses: buses.count ?? 0,
       total_drivers: drivers.count ?? 0,
-      total_routes: drivers.count ?? 0,
+      total_routes: routes.count ?? 0,
       total_students: students.count ?? 0,
     };
   } catch (err) {

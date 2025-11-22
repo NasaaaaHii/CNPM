@@ -45,3 +45,9 @@ export async function getAllCurrentPositionsHandler(
     return res.status(500).json({ success: false, message: error.message });
   }
 }
+
+
+/**
+ * GET danh sach student di kem [busid,lat,lng]
+ * Lấy cac vi tri cua student
+ */
