@@ -9,19 +9,32 @@ export interface User {
     user_name: string;
     type_account_id: number;
     password: string;
-    account_staus: string;
+    account_status: string;
     type_user_name: string;
+}
+
+export interface CreateUserPayload {
+    name: string;
+    phone_number: string;
+    email: string;
+    type_user_id: number;
 }
 
 export const userService = {
     getUsers: async () => {
         const res = await axiosClient.get<{ ok: boolean; data: User[] }>(
-            "http://localhost:5000/api/users"
+            "api/users"
         );
         return res.data.data;
     },
 
     updateUser: async (id: number, updateData: Partial<{ name: string; phone_number: string; email: string; }>) => {
-        return axiosClient.put<User>(`api/users/${id}`, updateData);
+        const res = await axiosClient.put<{ok: boolean, data: User}>(`api/users/${id}`, updateData);
+        return res.data.data;
+    }, 
+
+    addUser: async (userData: CreateUserPayload) => {
+        const res = await axiosClient.post<{ ok: boolean; data: CreateUserPayload}>("api/users", userData);
+        return res.data.data;
     }
 }
