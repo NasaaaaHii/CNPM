@@ -55,7 +55,7 @@ export default function MapClient() {
     (async () => {
       try {
         // gọi /api/realtime/2/students
-        const res = await axiosClient.get(`/api/realtime/${BUS_ID}/students`);
+        const res = await axiosClient.get(`/api/admin/realtime/${BUS_ID}/students`);
         if (!mounted) return;
 
         const students = res?.data?.data ?? [];
