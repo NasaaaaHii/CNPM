@@ -39,3 +39,17 @@ export const addBus = async (req : Request, res : Response) => {
         return res.status(500).json({ok: false, error: "Failed to add bus"});
     }
 }
+
+export const deleteBus = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            return res.status(400).json({ ok : false, error: "Bus id is required"});
+        }
+        const deleteBus = await busService.deleteBus(parseInt(id));
+        return res.json({ok: true, data: deleteBus});
+    } catch (error) {
+        console.error("Delete bus error: ", error);
+        return res.status(500).json({ok: false, error: "Failed to delete bus"});
+    }
+}

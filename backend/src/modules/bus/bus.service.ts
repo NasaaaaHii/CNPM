@@ -1,3 +1,4 @@
+import { da } from "zod/locales";
 import supabase from "../../config/supabaseClient.js";
 
 export const getAllBus = async () => {
@@ -5,7 +6,7 @@ export const getAllBus = async () => {
         .from('bus')
         .select(`
             *
-            `);
+            `).is('is_delete', false).order('bus_id', { ascending: true });
     if (busesError) {
         throw new Error(`Error fetching bus: ${busesError.message}`);
     }
@@ -36,6 +37,17 @@ export const addBus = async (busData: Partial<{license_plate_number : string, nu
         }]).select().single();
     if (error) {
         throw new Error(`Error adding bus: ${error.message}`);
+    }
+    return data;
+}
+
+export const deleteBus = async (bus_id : number) => {
+    const { data, error } = await supabase
+        .from('bus')
+        .update({ is_delete: true })
+        .eq('bus_id', bus_id);
+    if (error) {
+        throw new Error(`Error delete bus: ${error.message}`)
     }
     return data;
 }

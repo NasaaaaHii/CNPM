@@ -18,7 +18,9 @@ import BusDialog from "./BusDialog";
 export default function ManagerBus() {
   const [buses, setBuses] = useState<any[]>([]);
   const [dialog, setDialog] = useState<{ open: boolean; mode: "add" | "edit" | "read" }>({ open: false, mode: "add" });
-  const handleOpen = (mode: "add" | "edit" | "read") => {
+  const [selectedBus, setSelectedBus] = useState<any>(null);
+  const handleOpen = (mode: "add" | "edit" | "read", bus?: any) => {
+    setSelectedBus(bus || null);
     setDialog({ open: true, mode });
   };
   const handleClose = (open: boolean) => {
@@ -32,6 +34,15 @@ export default function ManagerBus() {
       console.error("Failed to fetch buses:", error);
     }
   };
+
+  const handleDelete = async (busId: number) => {
+    try {
+      await busService.deleteBus(busId);
+      fetchBuses();
+    } catch (error) {
+      console.error("Failed to delete bus:", error);
+    }
+  }
 
   useEffect(() => {
     fetchBuses();
@@ -91,12 +102,14 @@ export default function ManagerBus() {
                       <Button
                         variant={"secondary"}
                         className="hover:bg-orange-400"
+                        onClick={() => {handleOpen("edit", bus)}}
                       >
                         <UserRoundPen />
                       </Button>
                       <Button
                         variant={"secondary"}
                         className="hover:bg-red-500"
+                        onClick={() => {handleDelete(bus.bus_id)}}
                       >
                         <Trash />
                       </Button>
@@ -108,7 +121,7 @@ export default function ManagerBus() {
           </CardContent>
         </Card>
       </div>
-      <BusDialog open={dialog.open} mode={dialog.mode} onOpenChange={handleClose} onSuccess={fetchBuses}/>
+    <BusDialog open={dialog.open} mode={dialog.mode} initialData = {selectedBus} onOpenChange={handleClose} onSuccess={fetchBuses}/>
     </div>
   );
 }
