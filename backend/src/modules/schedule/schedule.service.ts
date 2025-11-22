@@ -111,12 +111,22 @@ export async function createSchedule(data: {
 
 //Lấy tất cả schedules
 function formatTime(timestamp: string): string {
+  if (!timestamp) return "N/A";
   try {
+    const timeMatch = timestamp.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if (timeMatch) {
+      const hours = timeMatch[1]?.padStart(2, "0");
+      const minutes = timeMatch[2];
+      return `${hours}:${minutes}`;
+    }
     const date = new Date(timestamp);
-    return date.toLocaleTimeString("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleTimeString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+    return "N/A";
   } catch {
     return "N/A";
   }
@@ -134,7 +144,7 @@ async function calculateStatus(
     .eq("bus_id", busId)
     .gte("timestamp", three.toISOString())
     .limit(1)
-    .single();
+    .maybeSingle();
   if (data) {
     return "in_progress";
   }
@@ -148,10 +158,10 @@ async function calculateStatus(
 }
 // lấy thông tin tất cả lịch trình
 export async function getAllSchedule(filter?: {
-  date: string;
-  driver_id: number;
-  bus_id: number;
-  route_id: number;
+  date?: string;
+  driver_id?: number;
+  bus_id?: number;
+  route_id?: number;
 }) {
   let q = supabase
     .from("schedule")
@@ -170,16 +180,20 @@ export async function getAllSchedule(filter?: {
       )`
     )
     .order("schedule_date", { ascending: false });
-  if (filter?.date) {
+  if (
+    filter?.date !== undefined &&
+    filter.date !== null &&
+    filter.date !== ""
+  ) {
     q = q.eq("schedule_date", filter.date);
   }
-  if (filter?.driver_id) {
+  if (filter?.driver_id !== undefined && filter.driver_id !== null) {
     q = q.eq("driver_id", filter.driver_id);
   }
-  if (filter?.bus_id) {
+  if (filter?.bus_id !== undefined && filter.bus_id !== null) {
     q = q.eq("bus_id", filter.bus_id);
   }
-  if (filter?.route_id) {
+  if (filter?.route_id !== undefined && filter.route_id !== null) {
     q = q.eq("route_id", filter.route_id);
   }
   const { data, error } = await q;
@@ -191,14 +205,6 @@ export async function getAllSchedule(filter?: {
         schedule.bus_id,
         schedule.schedule_date
       );
-
-      const { data: trackingData } = await supabase
-        .from("tracking_realtime")
-        .select("timestamp")
-        .eq("bus_id", schedule.bus_id)
-        .gte("timestamp", `${schedule.schedule_date}T00:00:00`)
-        .order("timestamp", { ascending: true })
-        .limit(1);
       return {
         schedule_key: `${schedule.driver_id}-${schedule.bus_id}-${schedule.route_id}-${schedule.schedule_date}`,
         driver_id: schedule.driver_id,
