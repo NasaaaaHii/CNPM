@@ -31,10 +31,6 @@ export default function ManagerRoutes() {
     }
   };
 
-  useEffect(() => {
-    fetchRoutes();
-  }, []);
-
   const [dialog, setDialog] = useState<{
     open: boolean;
     mode: "add" | "edit" | "read";
@@ -43,6 +39,10 @@ export default function ManagerRoutes() {
     setSelectedRoute(route);
     setDialog({ open: true, mode });
   };
+
+  useEffect(() => {
+    fetchRoutes();
+  }, []);
 
   const handleClose = (open: boolean) => {
     setDialog((prev) => ({ ...prev, open }));
@@ -140,6 +140,7 @@ export default function ManagerRoutes() {
         open={dialog.open}
         mode={dialog.mode}
         onOpenChange={handleClose}
+        onSuccess={fetchRoutes}
         intialData={selectedRoute}
       />
     </div>

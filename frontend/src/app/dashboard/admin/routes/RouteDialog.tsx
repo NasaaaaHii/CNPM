@@ -35,7 +35,7 @@ interface RouteDialogProps {
   mode: "add" | "edit" | "read";
   onOpenChange: (open: boolean) => void;
   onSuccess?: (route: RouteType) => void;
-  intialData?: RouteType;
+  intialData?: any;
 }
 
 export default function RouteDialog({
@@ -112,14 +112,18 @@ export default function RouteDialog({
     setSelectedPoints(newPoints);
   };
 
-  const handelSubmit = async () => {
+  const handelSubmit = async () => { 
+    const payload = {
+        route_name: formData.route_name,
+        status: formData.status,
+        pickup_points: selectedPoints.map(p => p.pickup_point_id) 
+    };
     if (mode === "add") {
       try {
         const payload = {
             ...formData,
             pickup_points: selectedPoints.map(p => p.pickup_point_id) 
         };
-        console.log(payload);
         const newRoute = await routeService.addRoute(payload);
         
         if (onSuccess) onSuccess(newRoute);
@@ -127,17 +131,32 @@ export default function RouteDialog({
       } catch (error) {
         console.error("Failed to add route:", error);
       }
+    } else if (mode === "edit") {
+      try {
+        const newRoute = await routeService.updateRoute(intialData.route_id, payload);
+        if (onSuccess) onSuccess(newRoute);
+        onOpenChange(false);
+      } catch(error) {
+        console.error("Failed to edit route:", error);
+      }
     }
   }
 
   useEffect(() => {
-    if (intialData) {
+    if (mode == "edit") {
       setFormData(intialData);
       const currentPoints = intialData.pickup_points || [];
 
       setSelectedPoints(
         pickup.filter((p) => currentPoints.includes(p.pickup_point_id))
       );
+    } else {
+      setFormData({
+        route_name: '',
+        status: 'active',
+        pickup_points: []
+      });
+      setSelectedPoints([]);
     }
     fetchData();
   }, [open, mode])

@@ -20,5 +20,10 @@ export const routeService = {
     deleteRoute: async (route_id: number) => {
         const res = await axiosClient.delete<{ok: boolean, data: any}>(`api/routes/${route_id}`);
         return res.data.data;
+    },
+
+    updateRoute: async (id: number, payload: any) => {
+        const res = await axiosClient.put<{ok: boolean, data: any}>(`api/routes/${id}`, payload);  
+        return res.data.data;
     }
 }
