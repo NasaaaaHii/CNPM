@@ -9,18 +9,14 @@ import { startMQTT } from "./modules/mqtt/mqtt.service.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import overviewRoutes from "./modules/overview/overview.route.js";
 import trackingRoutes from "./modules/tracking/tracking.routes.js";
-<<<<<<< HEAD
 import realtimeRoutes from "./modules/realtime/realtime.route.js";
 import MessageRoute from "./modules/message/message.router.js";
 import StudentsRoute from "./modules/students/students.router.js";
 import nofiticationRoute from "./modules/nofications/nofitications.route.js";
 import scheduleRoutes from "./modules/schedule/schedule.routes.js";
-
-=======
 import userRoutes from "./modules/user/user.routes.js";
 import busRoutes from "./modules/bus/bus.routes.js"
 import routeRoutes from "./modules/routes/route.routes.js"
->>>>>>> 78ae5ca4c8aaf7c23c5d86439acb8e080c172519
 
 dotenv.config();
 
@@ -48,6 +44,9 @@ server.use("/api/admin/overview",overviewRoutes);
 server.use("/api/admin/realtime" ,realtimeRoutes);
 server.use("/api/admin/nofitications",nofiticationRoute);
 server.use("/api/schedule", scheduleRoutes);
+server.use("/api/users", userRoutes)
+server.use("/api/bus", busRoutes)
+server.use("/api/routes", routeRoutes)
 
 // ------------------- DRIVER ROUTE --------------------------
 server.use("/api", StudentsRoute);
